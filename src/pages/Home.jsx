@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styled from "styled-components";
+import {useNavigate} from "react-router-dom";
 
 const HomeWrapper = styled.div`
   max-width: 1200px;
@@ -60,6 +61,8 @@ const Button = styled.button`
 `;
 
 const Home = () => {
+    const navigate = useNavigate();
+
     const [campaigns] = useState([
         {
             id: 1,
@@ -101,7 +104,7 @@ const Home = () => {
                                 진행 기간: {campaign.startDate} ~ {campaign.endDate}
                             </div>
                         </CampaignInfo>
-                        <Button>자세히 보기</Button>
+                        <Button onClick={() => navigate(`/campaigns/${campaign.id}`)}>자세히 보기</Button>
                     </CampaignCard>
                 ))}
             </CampaignList>
