@@ -4,6 +4,8 @@ import NavBar from "./components/NavBar.jsx";
 import Home from "./pages/Home.jsx";
 import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
+import CampaignCreate from "./pages/CampaignCreate.jsx";
+import CampaignDetail from "./pages/CampaignDetail.jsx";
 
 function App() {
   return (
@@ -14,6 +16,8 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
+                <Route path="/campaign/create" element={<CampaignCreate />} />
+                <Route path="/campaign/:id" element={<CampaignDetail />} />
             </Routes>
         </BrowserRouter>
     </>
