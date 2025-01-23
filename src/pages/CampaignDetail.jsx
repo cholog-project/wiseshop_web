@@ -3,64 +3,65 @@ import { useParams } from "react-router-dom";
 import styled from "styled-components";
 
 const Container = styled.div`
-  max-width: 800px;
-  margin: 2rem auto;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
-  padding: 1.5rem;
+    max-width: 800px;
+    margin: 2rem auto;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 1.5rem;
+    color: ${(props) => props.theme.color.DEEP_DARKGRAY};
 `;
 
 const Title = styled.h1`
-  margin-bottom: 1rem;
-  font-size: 1.5rem;
-  text-align: center;
+    margin-bottom: 1rem;
+    font-size: 1.5rem;
+    text-align: center;
 `;
 
 const Section = styled.div`
-  margin-bottom: 1.5rem;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  padding: 1rem;
-  h2 {
-    font-size: 1.2rem;
-    margin-bottom: 0.5rem;
-  }
-  p {
-    margin-bottom: 0.3rem;
-  }
+    margin-bottom: 1.5rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    padding: 1rem;
+    h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+    }
+    p {
+        margin-bottom: 0.3rem;
+    }
 `;
 
 const OrderWrapper = styled.div`
-  margin-top: 1rem;
-  padding: 1rem;
-  border: 1px solid #eee;
-  border-radius: 4px;
-  background-color: #fafafa;
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 4px;
+    background-color: #fafafa;
 `;
 
 const OrderLabel = styled.label`
-  display: inline-block;
-  margin-right: 0.5rem;
-  font-weight: 600;
+    display: inline-block;
+    margin-right: 0.5rem;
+    font-weight: 600;
 `;
 
 const OrderInput = styled.input`
-  width: 60px;
-  padding: 0.25rem;
-  margin-right: 1rem;
+    width: 60px;
+    padding: 0.25rem;
+    margin-right: 1rem;
 `;
 
 const OrderButton = styled.button`
-  padding: 0.5rem 1rem;
-  background-color: ${(props) => props.theme.color.PRIMARY};
-  border: none;
-  border-radius: 4px;
-  color: #fff;
-  cursor: pointer;
-  &:hover {
+    padding: 0.5rem 1rem;
+    background-color: ${(props) => props.theme.color.PRIMARY};
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    cursor: pointer;
+    &:hover {
     background-color: #001844;
-  }
+    }
 `;
 
 const CampaignDetail = () => {

@@ -5,12 +5,15 @@ import App from './App.jsx'
 import GlobalStyles from "./style/GlobalStyles.js";
 import {ThemeProvider} from "styled-components";
 import {theme} from "./style/theme.js";
+import {RecoilRoot} from "recoil";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-      <ThemeProvider theme={theme}>
-          <GlobalStyles />
-          <App />
-      </ThemeProvider>
+      <RecoilRoot>
+          <ThemeProvider theme={theme}>
+              <GlobalStyles />
+              <App />
+          </ThemeProvider>
+      </RecoilRoot>
   </StrictMode>,
 )

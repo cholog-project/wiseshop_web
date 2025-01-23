@@ -1,5 +1,8 @@
 import { useState } from "react";
 import styled from "styled-components";
+import {userState} from "../recoil/atoms.js";
+import {useNavigate} from "react-router-dom";
+import {useSetRecoilState} from "recoil";
 
 const FormContainer = styled.div`
   max-width: 400px;
@@ -49,14 +52,23 @@ const SubmitButton = styled.button`
 `;
 
 const SignIn = () => {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
+    const setUser = useSetRecoilState(userState)
 
-    const handleSignIn = (e) => {
-        e.preventDefault();
+    const handleSignIn = () => {
         // 추후 axios.post("/signin", { email, password }) 등으로 교체
-        console.log("SignIn:", { email, password });
-        alert("로그인 기능은 추후 구현 예정!");
+        const mockResponse = {
+            id: 123,
+            email: "abc@domain.com",
+            name: "홍길동",
+            token: "JWT_TOKEN",
+        };
+        setUser({
+            ...mockResponse,
+            isLoggedIn: true,
+        });
+
+        navigate("/");
     };
 
     return (
@@ -68,8 +80,8 @@ const SignIn = () => {
                     <input
                         type="email"
                         placeholder="example@domain.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        // value={email}
+                        // onChange={(e) => setEmail(e.target.value)}
                         required
                     />
                 </FormGroup>
@@ -78,8 +90,8 @@ const SignIn = () => {
                     <input
                         type="password"
                         placeholder="비밀번호"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        // value={password}
+                        // onChange={(e) => setPassword(e.target.value)}
                         required
                     />
                 </FormGroup>
