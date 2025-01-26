@@ -1,6 +1,7 @@
-import { useState } from "react";
+import {useEffect, useState} from "react";
 import styled from "styled-components";
 import {useNavigate} from "react-router-dom";
+import axiosInstance from "../api/axiosInstance.js";
 
 const HomeWrapper = styled.div`
   max-width: 1200px;
@@ -63,48 +64,50 @@ const Button = styled.button`
 const Home = () => {
     const navigate = useNavigate();
 
-    const [campaigns] = useState([
-        {
-            id: 1,
-            name: "Amazing Gadget",
-            description: "스마트 기기로 일상에 편리함을!",
-            goal: 100,
-            startDate: "2025-01-20",
-            endDate: "2025-01-31",
-        },
-        {
-            id: 2,
-            name: "Eco-Friendly Bottle",
-            description: "환경을 생각한 텀블러 프로젝트입니다.",
-            goal: 200,
-            startDate: "2025-02-01",
-            endDate: "2025-02-15",
-        },
-        {
-            id: 3,
-            name: "Stylish Backpack",
-            description: "여행/출근 모두 OK! 멋진 백팩!",
-            goal: 150,
-            startDate: "2025-03-01",
-            endDate: "2025-03-20",
-        },
-    ]);
+    const [campaigns, setCampaigns] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        const fetchCampaigns = async () => {
+            try {
+                const response = await axiosInstance.get("/campaigns");
+                setCampaigns(response.data);
+                setError(null);
+            }  catch (error) {
+                console.log("캠페인 데이터 로드 실패:", error);
+                setError(error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        fetchCampaigns();
+    }, []);
+
+    if (loading) {
+        return <div style={{ textAlign: "center", marginTop: "2rem" }}>로딩 중...</div>;
+    }
+
+    if (error) {
+        return <div style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>에러 발생</div>;
+    }
 
     return (
         <HomeWrapper>
             <Title>현재 진행 중인 캠페인</Title>
             <CampaignList>
                 {campaigns.map((campaign) => (
-                    <CampaignCard key={campaign.id}>
-                        <CampaignName>{campaign.name}</CampaignName>
-                        <CampaignDesc>{campaign.description}</CampaignDesc>
+                    <CampaignCard key={campaign.campaignId}>
+                        <CampaignName>{campaign.productName}</CampaignName>
+                        <CampaignDesc>{campaign.productDescription}</CampaignDesc>
                         <CampaignInfo>
-                            <div>목표 수량: {campaign.goal}</div>
+                            <div>목표 수량: {campaign.goalQuantity}</div>
                             <div>
                                 진행 기간: {campaign.startDate} ~ {campaign.endDate}
                             </div>
                         </CampaignInfo>
-                        <Button onClick={() => navigate(`/campaigns/${campaign.id}`)}>자세히 보기</Button>
+                        <Button onClick={() => navigate(`/campaigns/${campaign.campaignId}`)}>자세히 보기</Button>
                     </CampaignCard>
                 ))}
             </CampaignList>

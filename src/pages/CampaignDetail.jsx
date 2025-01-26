@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import styled from "styled-components";
+import axiosInstance from "../api/axiosInstance.js";
 
 const Container = styled.div`
     max-width: 800px;
@@ -65,71 +66,80 @@ const OrderButton = styled.button`
 `;
 
 const CampaignDetail = () => {
+    const navigate = useNavigate();
     const { id } = useParams();
-
-    // 실제로는 여기서 axios.get(`/campaigns/${id}`) 등을 통해 데이터를 가져옵니다.
-    // 지금은 Mock 데이터를 useState로 관리
     const [campaign, setCampaign] = useState(null);
     const [orderCount, setOrderCount] = useState(1);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // Mock: 실제 API 연동 대신, setCampaign에 하드코딩된 값 대입
-        // id에 따라 분기할 수도 있음
-        const mockData = {
-            id,
-            startDate: "2025-01-20",
-            endDate: "2025-01-31",
-            goalQuantity: 100,
-            soldQuantity: 40,
-            product: {
-                name: "Amazing Gadget",
-                description: "스마트 기기로 일상에 편리함을!",
-                price: 29900,
-            },
-            stock: {
-                totalQuantity: 80,  // 남은 재고나 총 재고를 표시
-            },
+        const fetchCampaign = async () => {
+            try {
+                const response = await axiosInstance.get(`/campaigns/${id}`);
+                setCampaign(response.data);
+                setError(null);
+            } catch (err) {
+                console.error(err);
+                setError("캠페인 정보를 불러오지 못했습니다.");
+            } finally {
+                setLoading(false); // 로딩 종료
+            }
         };
 
-        setCampaign(mockData);
+        fetchCampaign();
     }, [id]);
 
     // 주문하기 버튼
-    const handleOrder = () => {
-        // 추후 axios.post("/orders", {...}) 등을 통해 실제 주문 처리
-        console.log("주문 요청:", {
-            productId: campaign?.id, // 실제론 productId 별도 관리
-            quantity: orderCount,
-        });
-        alert(`(Mock) ${orderCount}개 주문 신청했습니다!`);
+    const handleOrder = async () => {
+        if (orderCount < 1) {
+            alert("1개 이상의 수량을 입력해주세요.");
+            return;
+        }
+
+        try {
+            await axiosInstance.post(`/order`, {
+                campaignId: campaign.campaignId,
+                orderQuantity: orderCount,
+            });
+            alert("주문이 성공적으로 완료되었습니다.");
+            navigate("/orders");
+        } catch (error) {
+            console.error("주문 생성 실패");
+            alert("주문이 실패했습니다. 다시 시도해주세요.");
+        }
     };
 
-    if (!campaign) {
+    if (loading) {
         return <div style={{ textAlign: "center", marginTop: "2rem" }}>로딩중...</div>;
+    }
+
+    if (error) {
+        return <div style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>{error}</div>;
     }
 
     return (
         <Container>
-            <Title>캠페인 상세 (ID: {campaign.id})</Title>
+            <Title>캠페인 상세 (ID: {campaign.campaignId})</Title>
 
             <Section>
                 <h2>캠페인 정보</h2>
                 <p>시작일: {campaign.startDate}</p>
                 <p>종료일: {campaign.endDate}</p>
                 <p>목표 수량: {campaign.goalQuantity}</p>
-                <p>판매(펀딩)된 수량: {campaign.soldQuantity}</p>
+                {/*<p>판매(펀딩)된 수량: {campaign.soldQuantity}</p>*/}
             </Section>
 
             <Section>
                 <h2>상품 정보</h2>
                 <p>상품명: {campaign.product.name}</p>
                 <p>상품설명: {campaign.product.description}</p>
-                <p>가격: {campaign.product.price}원</p>
+                <p>가격: {campaign.product.price.toLocaleString()}원</p>
             </Section>
 
             <Section>
                 <h2>재고 정보</h2>
-                <p>총 재고: {campaign.stock.totalQuantity}</p>
+                <p>총 재고: {campaign.product.totalQuantity}</p>
             </Section>
 
             <OrderWrapper>

@@ -1,5 +1,7 @@
 import { useState } from "react";
 import styled from "styled-components";
+import axiosInstance from "../api/axiosInstance.js";
+import {useNavigate} from "react-router-dom";
 
 const FormContainer = styled.div`
   max-width: 400px;
@@ -48,15 +50,30 @@ const SubmitButton = styled.button`
 `;
 
 const SignUp = () => {
-    const [email, setEmail] = useState("");
-    const [name, setName] = useState("");
-    const [password, setPassword] = useState("");
+    const navigate = useNavigate();
 
-    const handleSignUp = (e) => {
+    const [ newMember, setNewMember] = useState({
+        name: "",
+        email: "",
+        password: "",
+    });
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setNewMember({...newMember, [name]: value});
+    }
+
+    const handleSignUp = async (e) => {
         e.preventDefault();
-        // 추후 axios.post("/signup", { email, name, password }) 등으로 교체
-        console.log("SignUp:", { email, name, password });
-        alert("회원가입 기능은 추후 구현 예정!");
+        try {
+            await axiosInstance.post("/signup", newMember);
+            alert("회원가입 성공");
+
+            navigate("/signin");
+        } catch (error) {
+            console.log(error);
+            alert("회원가입 실패");
+        }
     };
 
     return (
@@ -64,22 +81,24 @@ const SignUp = () => {
             <FormTitle>회원가입</FormTitle>
             <form onSubmit={handleSignUp}>
                 <FormGroup>
-                    <label>이메일</label>
+                    <label>이름</label>
                     <input
-                        type="email"
-                        placeholder="example@domain.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
+                        type="text"
+                        name="name"
+                        placeholder="Kong"
+                        value={newMember.name}
+                        onChange={handleChange}
                         required
                     />
                 </FormGroup>
                 <FormGroup>
-                    <label>이름</label>
+                    <label>이메일</label>
                     <input
-                        type="text"
-                        placeholder="홍길동"
-                        value={name}
-                        onChange={(e) => setName(e.target.value)}
+                        type="email"
+                        name="email"
+                        placeholder="example@example.com"
+                        value={newMember.email}
+                        onChange={handleChange}
                         required
                     />
                 </FormGroup>
@@ -87,9 +106,10 @@ const SignUp = () => {
                     <label>비밀번호</label>
                     <input
                         type="password"
+                        name="password"
                         placeholder="비밀번호"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
+                        value={newMember.password}
+                        onChange={handleChange}
                         required
                     />
                 </FormGroup>

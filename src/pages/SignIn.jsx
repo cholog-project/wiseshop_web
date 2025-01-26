@@ -1,8 +1,9 @@
-import { useState } from "react";
 import styled from "styled-components";
-import {userState} from "../recoil/atoms.js";
 import {useNavigate} from "react-router-dom";
+import axiosInstance from "../api/axiosInstance.js";
+import {useState} from "react";
 import {useSetRecoilState} from "recoil";
+import {userState} from "../recoil/atoms.js";
 
 const FormContainer = styled.div`
   max-width: 400px;
@@ -52,23 +53,30 @@ const SubmitButton = styled.button`
 `;
 
 const SignIn = () => {
+    const [ member, setMember ] = useState({email: "", password: "" });
+    const setUser = useSetRecoilState(userState);
+
     const navigate = useNavigate();
-    const setUser = useSetRecoilState(userState)
 
-    const handleSignIn = () => {
-        // 추후 axios.post("/signin", { email, password }) 등으로 교체
-        const mockResponse = {
-            id: 123,
-            email: "abc@domain.com",
-            name: "홍길동",
-            token: "JWT_TOKEN",
-        };
-        setUser({
-            ...mockResponse,
-            isLoggedIn: true,
-        });
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setMember({...member, [name]: value});
+    }
 
-        navigate("/");
+    const handleSignIn = async (e) => {
+        e.preventDefault();
+        try {
+            await axiosInstance.post("/signin", member);
+            console.log("로그인 성공");
+            setUser({
+                isLoggedIn: true,
+            });
+            localStorage.setItem("userState", JSON.stringify({isLoggedIn: true}));
+            navigate("/");
+        } catch (error) {
+            console.log(error);
+            alert(error.message);
+        }
     };
 
     return (
@@ -79,9 +87,10 @@ const SignIn = () => {
                     <label>이메일</label>
                     <input
                         type="email"
+                        name="email"
                         placeholder="example@domain.com"
-                        // value={email}
-                        // onChange={(e) => setEmail(e.target.value)}
+                        value={member.email}
+                        onChange={handleChange}
                         required
                     />
                 </FormGroup>
@@ -89,9 +98,10 @@ const SignIn = () => {
                     <label>비밀번호</label>
                     <input
                         type="password"
+                        name="password"
                         placeholder="비밀번호"
-                        // value={password}
-                        // onChange={(e) => setPassword(e.target.value)}
+                        value={member.password}
+                        onChange={handleChange}
                         required
                     />
                 </FormGroup>

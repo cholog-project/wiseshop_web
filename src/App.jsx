@@ -6,6 +6,7 @@ import SignIn from "./pages/SignIn.jsx";
 import SignUp from "./pages/SignUp.jsx";
 import CampaignCreate from "./pages/CampaignCreate.jsx";
 import CampaignDetail from "./pages/CampaignDetail.jsx";
+import Orders from "./pages/Orders.jsx";
 
 function App() {
   return (
@@ -16,8 +17,9 @@ function App() {
                 <Route path="/" element={<Home />} />
                 <Route path="/signin" element={<SignIn />} />
                 <Route path="/signup" element={<SignUp />} />
-                <Route path="/campaign/create" element={<CampaignCreate />} />
-                <Route path="/campaign/:id" element={<CampaignDetail />} />
+                <Route path="/campaigns/create" element={<CampaignCreate />} />
+                <Route path="/campaigns/:id" element={<CampaignDetail />} />
+                <Route path="/orders" element={<Orders />} />
             </Routes>
         </BrowserRouter>
     </>
