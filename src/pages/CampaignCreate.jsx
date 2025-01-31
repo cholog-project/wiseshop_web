@@ -1,91 +1,116 @@
 import { useState } from "react";
 import styled from "styled-components";
+import {useNavigate} from "react-router-dom";
+import axiosInstance from "../api/axiosInstance.js";
 
 const Container = styled.div`
-  max-width: 600px;
-  margin: 2rem auto;
-  padding: 1.5rem;
-  background-color: #fff;
-  border: 1px solid #ddd;
-  border-radius: 6px;
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 1.5rem;
+    background-color: #fff;
+    color: ${(props) => props.theme.color.DEEP_DARKGRAY};
+    border: 1px solid #ddd;
+    border-radius: 6px;
 `;
 
 const Title = styled.h1`
-  text-align: center;
-  margin-bottom: 1.5rem;
-  font-size: 1.5rem;
+    text-align: center;
+    margin-bottom: 1.5rem;
+    font-size: 1.5rem;
 `;
 
 const FormGroup = styled.div`
-  margin-bottom: 1rem;
-  display: flex;
-  flex-direction: column;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+    
 
-  label {
-    margin-bottom: 0.5rem;
-    font-weight: 600;
-  }
+    label {
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+    }
+    
+    input {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        //background-color: #fff;
+        // color: ${(props) => props.theme.color.DEEP_DARKGRAY};
+    }
 
-  input {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-  }
-
-  /* 텍스트에어리어 등 다른 입력타입도 가능 */
-  textarea {
-    padding: 0.5rem;
-    font-size: 1rem;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    resize: vertical;
-  }
+    /* 텍스트에어리어 등 다른 입력타입도 가능 */
+    textarea {
+        padding: 0.5rem;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        resize: vertical;
+    }
 `;
 
 const SubmitButton = styled.button`
-  width: 100%;
-  padding: 0.75rem;
-  background-color: ${(props) => props.theme.color.PRIMARY};
-  border: none;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-  &:hover {
-    background-color: #001844;
-  }
+    width: 100%;
+    padding: 0.75rem;
+    background-color: ${(props) => props.theme.color.PRIMARY};
+    border: none;
+    border-radius: 4px;
+    color: #fff;
+    font-size: 1rem;
+    cursor: pointer;
+    
+    &:hover {
+        background-color: #001844;
+    }
 `;
 
 const CampaignCreate = () => {
-    // 캠페인 정보
+    const navigate = useNavigate();
+
+
     const [startDate, setStartDate] = useState("");
     const [endDate, setEndDate] = useState("");
     const [goalQuantity, setGoalQuantity] = useState("");
 
-    // 상품 정보
     const [productName, setProductName] = useState("");
     const [productDesc, setProductDesc] = useState("");
     const [productPrice, setProductPrice] = useState("");
 
-    // 재고 정보
     const [totalStock, setTotalStock] = useState("");
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // 추후 axios.post("/campaigns", {...}) 와 같은 식으로 API 연동
+
+        if (goalQuantity <= 0 || productPrice <= 0 || totalStock <= 0) {
+            alert("목표 수량, 상품 가격, 재고 수량은 양수여야 합니다.");
+            return;
+        }
+
         const campaignData = {
             startDate,
             endDate,
             goalQuantity,
-            productName,
-            productDesc,
-            productPrice,
-            totalStock,
+            product: {
+                name: productName,
+                description: productDesc,
+                price: productPrice,
+                totalQuantity: totalStock,
+            },
         };
-        console.log("등록할 캠페인 데이터:", campaignData);
 
-        alert("(Mock) 캠페인 등록 완료! 콘솔을 확인해보세요.");
+        try {
+            const response = await axiosInstance.post("/campaigns", campaignData);
+            console.log("캠페인 생성 성공:", response.data);
+
+            alert("캠페인이 성공적으로 등록되었습니다!");
+
+            navigate(`/campaigns/${response.data}`);
+        } catch (error) {
+            console.error("캠페인 생성 실패:", error.response?.data || error.message);
+            alert("캠페인 등록에 실패했습니다. 다시 시도해주세요.");
+        }
+
+
     };
 
     return (
@@ -94,18 +119,18 @@ const CampaignCreate = () => {
             <form onSubmit={handleSubmit}>
                 {/* 캠페인 정보 */}
                 <FormGroup>
-                    <label>펀딩 시작 날짜</label>
+                    <label>펀딩 시작 날짜 및 시간</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         value={startDate}
                         onChange={(e) => setStartDate(e.target.value)}
                         required
                     />
                 </FormGroup>
                 <FormGroup>
-                    <label>펀딩 종료 날짜</label>
+                    <label>펀딩 종료 날짜 및 시간</label>
                     <input
-                        type="date"
+                        type="datetime-local"
                         value={endDate}
                         onChange={(e) => setEndDate(e.target.value)}
                         required
