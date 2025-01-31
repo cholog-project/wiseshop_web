@@ -76,7 +76,7 @@ const Orders = () => {
                         {/*<OrderInfo>상태: {order.status}</OrderInfo>*/}
                     </OrderCard>
                 ))}
-            </OrderList>q
+            </OrderList>
         </Container>
     );
 };
