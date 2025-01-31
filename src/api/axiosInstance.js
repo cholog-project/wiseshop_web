@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const axiosInstance = axios.create({
-    baseURL: "https://api.wiseshop.kro.kr/api/v1",
+    baseURL: "https://wiseshop.kro.kr/api/v1",
     headers: {
         "Content-Type": "application/json",
     },

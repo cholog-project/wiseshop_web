@@ -68,15 +68,15 @@ const Orders = () => {
             <Title>나의 주문 목록</Title>
             <OrderList>
                 {orders.map((order) => (
-                    <OrderCard key={order.orderId}>
+                    <OrderCard key={order.id}>
                         <OrderInfo>상품명: {order.productName}</OrderInfo>
                         <OrderInfo>주문 수량: {order.count}</OrderInfo>
-                        <OrderInfo>총 가격: {order.totalPrice.toLocaleString()}원</OrderInfo>
-                        <OrderInfo>주문 날짜: {new Date(order.orderDate).toLocaleDateString()}</OrderInfo>
-                        <OrderInfo>상태: {order.status}</OrderInfo>
+                        {/*<OrderInfo>총 가격: {order.price.toLocaleString()}원</OrderInfo>*/}
+                        <OrderInfo>주문 날짜: {order.createdDate}</OrderInfo>
+                        {/*<OrderInfo>상태: {order.status}</OrderInfo>*/}
                     </OrderCard>
                 ))}
-            </OrderList>
+            </OrderList>q
         </Container>
     );
 };

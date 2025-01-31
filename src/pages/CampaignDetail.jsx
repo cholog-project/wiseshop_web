@@ -98,8 +98,8 @@ const CampaignDetail = () => {
         }
 
         try {
-            await axiosInstance.post(`/order`, {
-                campaignId: campaign.campaignId,
+            await axiosInstance.post(`/orders`, {
+                productId: campaign.product.productId,
                 orderQuantity: orderCount,
             });
             alert("주문이 성공적으로 완료되었습니다.");

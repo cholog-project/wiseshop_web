@@ -72,7 +72,7 @@ const Home = () => {
         const fetchCampaigns = async () => {
             try {
                 const response = await axiosInstance.get("/campaigns");
-                setCampaigns(response.data);
+                setCampaigns(response.data.responses);
                 setError(null);
             }  catch (error) {
                 console.log("캠페인 데이터 로드 실패:", error);
@@ -99,8 +99,8 @@ const Home = () => {
             <CampaignList>
                 {campaigns.map((campaign) => (
                     <CampaignCard key={campaign.campaignId}>
-                        <CampaignName>{campaign.productName}</CampaignName>
-                        <CampaignDesc>{campaign.productDescription}</CampaignDesc>
+                        <CampaignName>{campaign.product.name}</CampaignName>
+                        <CampaignDesc>{campaign.product.description}</CampaignDesc>
                         <CampaignInfo>
                             <div>목표 수량: {campaign.goalQuantity}</div>
                             <div>
