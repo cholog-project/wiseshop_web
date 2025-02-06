@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import {useNavigate, useParams} from "react-router-dom";
 import styled from "styled-components";
 import axiosInstance from "../api/axiosInstance.js";
+import TossPaymentWidget from "../components/TossPaymentWidget.jsx";
 
 const Container = styled.div`
     max-width: 800px;
@@ -72,6 +73,8 @@ const CampaignDetail = () => {
     const [orderCount, setOrderCount] = useState(1);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [showPayment, setShowPayment] = useState(false);
+    const [orderData, setOrderData] = useState(null);
 
     useEffect(() => {
         const fetchCampaign = async () => {
@@ -98,15 +101,28 @@ const CampaignDetail = () => {
         }
 
         try {
-            await axiosInstance.post(`/orders`, {
+            // 주문 생성 API 호출
+            const response = await axiosInstance.post(`/orders`, {
                 productId: campaign.product.id,
-                orderQuantity: orderCount,
+                orderQuantity: orderCount
             });
-            alert("주문이 성공적으로 완료되었습니다.");
-            navigate("/orders");
+            
+            // TODO : 결제 위젯에 필요한 데이터 설정
+            setOrderData({
+                orderId: response.data.orderId || `ORDER_${Date.now()}`,  // 주문번호
+                amount: orderCount * campaign.product.price,  // 결제 금액
+                orderName: `${campaign.product.name} ${orderCount}개`,  // 주문명
+                customerKey: "ANONYMOUS",  // 비회원 결제
+                customerEmail: "",  // 이메일 (선택)
+                customerName: "",   // 이름 (선택)
+                customerMobilePhone: ""  // 전화번호 (선택)
+            });
+            
+            // 결제 위젯 표시
+            setShowPayment(true);
         } catch (error) {
-            console.error("주문 생성 실패");
-            alert("주문이 실패했습니다. 다시 시도해주세요.");
+            console.error("주문 생성 실패", error);
+            alert("주문이 실패했습니다. 다시 시도해주세요.");        
         }
     };
 
@@ -152,6 +168,10 @@ const CampaignDetail = () => {
                 />
                 <OrderButton onClick={handleOrder}>주문하기</OrderButton>
             </OrderWrapper>
+
+            {showPayment && orderData && (
+                <TossPaymentWidget orderData={orderData} />
+            )}
         </Container>
     );
 }
