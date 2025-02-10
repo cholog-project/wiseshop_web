@@ -1,11 +1,14 @@
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
+import { useSetRecoilState } from "recoil";
+import { orderDataState } from "../recoil/atoms";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
 const TossPaymentWidget = ({ orderData }) => {
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState(null);
+  const setOrderData = useSetRecoilState(orderDataState);
 
   useEffect(() => {
     async function fetchPaymentWidgets() {
@@ -13,7 +16,7 @@ const TossPaymentWidget = ({ orderData }) => {
       const tossPayments = await loadTossPayments(clientKey);
       // 회원 결제
       const widgets = tossPayments.widgets({
-        customerKey: orderData.customerKey || "ANONYMOUS" //TODO : 회원ID에 대한 UUID를 전달받아야 함
+        customerKey: orderData.customerKey
       });
       setWidgets(widgets);
     }
@@ -29,7 +32,7 @@ const TossPaymentWidget = ({ orderData }) => {
       // ------ 주문의 결제 금액 설정 ------
       await widgets.setAmount({
         currency: "KRW",
-        value: orderData.amount
+        value: Number(orderData.amount)
       });
       
       await Promise.all([
@@ -56,7 +59,10 @@ const TossPaymentWidget = ({ orderData }) => {
       return;
     }
   
-    widgets.setAmount(orderData.amount);
+    widgets.setAmount({
+      currency: "KRW",
+      value: orderData.amount
+    });
   }, [widgets, orderData.amount]);
 
   return (
@@ -71,17 +77,19 @@ const TossPaymentWidget = ({ orderData }) => {
           className="button"
           disabled={!ready}
           onClick={async () => {
+            
             try {
-              // ------ '결제하기' 버튼 누르면 결제창 띄우기 ------
-              // TODO : 하드코딩된 부분 수정
+              // 결제 요청 전에 orderData를 저장
+              setOrderData(orderData);
+
               await widgets.requestPayment({
                 orderId: orderData.orderId,
                 orderName: orderData.orderName,
-                successUrl: window.location.origin + "/success", // TODO : 성공 및 실패 시 리다이렉트 적용
+                successUrl: window.location.origin + "/success",
                 failUrl: window.location.origin + "/fail",
-                customerEmail: orderData.customerEmail || "customer123@gmail.com",
-                customerName: orderData.customerName || "고객",
-                customerMobilePhone: orderData.customerMobilePhone || "01012341234",
+                customerEmail: orderData.customerEmail,
+                customerName: orderData.customerName,
+                customerMobilePhone: orderData.customerMobilePhone,
               });
             } catch (error) {
               // 에러 처리하기
