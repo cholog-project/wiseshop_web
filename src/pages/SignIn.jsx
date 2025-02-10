@@ -66,12 +66,13 @@ const SignIn = () => {
     const handleSignIn = async (e) => {
         e.preventDefault();
         try {
-            await axiosInstance.post("/signin", member);
-            console.log("로그인 성공");
-            setUser({
+            const response = await axiosInstance.post("/signin", member);
+            const userData = {
                 isLoggedIn: true,
-            });
-            localStorage.setItem("userState", JSON.stringify({isLoggedIn: true}));
+                uuid: response.data.uuid,
+            };
+            setUser(userData);
+            localStorage.setItem("userState", JSON.stringify(userData));
             navigate("/");
         } catch (error) {
             console.log(error);
