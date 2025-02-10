@@ -90,7 +90,7 @@ const CampaignCreate = () => {
             startDate,
             endDate,
             goalQuantity,
-            product: {
+            productRequest: {
                 name: productName,
                 description: productDesc,
                 price: productPrice,
