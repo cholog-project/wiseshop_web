@@ -23,3 +23,21 @@ export const errorState = atom({
     key: "errorState",
     default: null,
 });
+
+const persistedOrderData = JSON.parse(localStorage.getItem("orderDataState")) || null;
+
+export const orderDataState = atom({
+    key: "orderDataState",
+    default: persistedOrderData,
+    effects: [
+        ({ onSet }) => {
+            onSet((newValue) => {
+                if (newValue === null) {
+                    localStorage.removeItem("orderDataState");
+                } else {
+                    localStorage.setItem("orderDataState", JSON.stringify(newValue));
+                }
+            });
+        },
+    ],
+});

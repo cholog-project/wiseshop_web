@@ -3,8 +3,8 @@ import {useNavigate, useParams} from "react-router-dom";
 import styled from "styled-components";
 import axiosInstance from "../api/axiosInstance.js";
 import TossPaymentWidget from "../components/TossPaymentWidget.jsx";
-import { useRecoilValue } from "recoil";
-import { userState } from "../recoil/atoms.js";
+import { useRecoilValue, useSetRecoilState } from "recoil";
+import { userState, orderDataState } from "../recoil/atoms.js";
 
 const Container = styled.div`
     max-width: 800px;
@@ -78,6 +78,7 @@ const CampaignDetail = () => {
     const [error, setError] = useState(null);
     const [showPayment, setShowPayment] = useState(false);
     const [orderData, setOrderData] = useState(null);
+    const setRecoilOrderData = useSetRecoilState(orderDataState);
 
     useEffect(() => {
         const fetchCampaign = async () => {
@@ -111,17 +112,19 @@ const CampaignDetail = () => {
 
         try {
             // TODO : 결제 위젯에 필요한 데이터 설정
-            setOrderData({
+            const orderData = {
                 orderId: `ORDER_${Date.now()}`,  // 주문번호
                 amount: orderCount * campaign.product.price,  // 결제 금액
                 orderName: `${campaign.product.name} ${orderCount}개`,  // 주문명
                 customerKey: user.uuid,
                 customerEmail: "",  // 이메일 (선택)
                 customerName: "",   // 이름 (선택)
-                customerMobilePhone: "",  // 전화번호 (선택)
+                customerMobilePhone: "01012345678",  // 전화번호 (선택)
                 productId: campaign.product.id,  // 상품 ID
                 orderQuantity: orderCount  // 주문 수량
-            });
+            };
+            setOrderData(orderData);
+            setRecoilOrderData(orderData);
             
             // 결제 위젯 표시
             setShowPayment(true);

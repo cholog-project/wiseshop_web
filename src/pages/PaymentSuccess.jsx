@@ -1,63 +1,64 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { useRecoilValue } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { orderDataState } from "../recoil/atoms";
+import axiosInstance from "../api/axiosInstance.js";
 
-export function SuccessPage() {
+export function PaymentSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const orderData = useRecoilValue(orderDataState);
+  const setOrderData = useSetRecoilState(orderDataState);
+  const isProcessing = useRef(false);
 
   useEffect(() => {
-    // 쿼리 파라미터 값이 결제 요청할 때 보낸 데이터와 동일한지 반드시 확인하세요.
-    // 클라이언트에서 결제 금액을 조작하는 행위를 방지할 수 있습니다.
-    const requestData = {
-      orderId: searchParams.get("orderId"),
-      amount: searchParams.get("amount"),
-      paymentKey: searchParams.get("paymentKey"),
-      productId: orderData?.productId,
-      orderQuantity: orderData?.orderQuantity
-    };
-
-    async function confirm() {
-      const response = await fetch("/orders", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestData),
-      });
-
-      const json = await response.json();
-
-      if (!response.ok) {
-        // 결제 실패 비즈니스 로직을 구현하세요.
-        navigate(`/fail?message=${json.message}&code=${json.code}`);
+    const processPayment = async () => {
+      if (!orderData || isProcessing.current) {
         return;
       }
 
-      // 결제 성공 비즈니스 로직을 구현하세요.
-    }
+      try {
+        isProcessing.current = true;
+        const requestData = {
+          paymentOrderId: searchParams.get("orderId"),
+          amount: searchParams.get("amount"),
+          paymentKey: searchParams.get("paymentKey"),
+          productId: orderData.productId,
+          orderQuantity: orderData.orderQuantity
+        };
 
-    if (orderData) {
-      confirm();
-    } else {
-      navigate("/");
-    }
-  }, [navigate, searchParams, orderData]);
+        await axiosInstance.post("/orders", requestData);
+        setOrderData(null);
+        navigate("/orders");
+      } catch (error) {
+        navigate(`/fail?message=${error.response?.data?.message || "결제 실패"}&code=${error.response?.data?.code || "unknown"}`);
+      } finally {
+        isProcessing.current = false;
+      }
+    };
+
+    processPayment();
+  }, [navigate, searchParams, setOrderData]); // orderData 제거
+
+  if (!orderData) {
+    return (
+      <div className="result wrapper">
+        <div className="box_section">
+          <h2>주문 정보를 불러오는 중...</h2>
+          <p>잠시만 기다려주세요.</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="result wrapper">
       <div className="box_section">
-        <h2>
-          결제 성공
-        </h2>
-        <p>{`주문번호: ${searchParams.get("orderId")}`}</p>
-        <p>{`결제 금액: ${Number(
-          searchParams.get("amount")
-        ).toLocaleString()}원`}</p>
-        <p>{`paymentKey: ${searchParams.get("paymentKey")}`}</p>
+        <h2>결제 확인 중...</h2>
+        <p>결제 정보를 확인하고 있습니다. 잠시만 기다려주세요.</p>
       </div>
     </div>
   );
 }
+
+export default PaymentSuccess;
