@@ -1,14 +1,12 @@
 import { loadTossPayments } from "@tosspayments/tosspayments-sdk";
 import { useEffect, useState } from "react";
-import { useSetRecoilState } from "recoil";
-import { orderDataState } from "../recoil/atoms";
+import axiosInstance from "../api/axiosInstance.js";
 
 const clientKey = "test_gck_docs_Ovk5rk1EwkEbP0W43n07xlzm";
 
 const TossPaymentWidget = ({ orderData }) => {
   const [ready, setReady] = useState(false);
   const [widgets, setWidgets] = useState(null);
-  const setOrderData = useSetRecoilState(orderDataState);
 
   useEffect(() => {
     async function fetchPaymentWidgets() {
@@ -77,10 +75,12 @@ const TossPaymentWidget = ({ orderData }) => {
           className="button"
           disabled={!ready}
           onClick={async () => {
-            
             try {
-              // 결제 요청 전에 orderData를 저장
-              setOrderData(orderData);
+              // 백엔드 서버의 세션에 주문 데이터 저장
+              await axiosInstance.post("/orders/session", {
+                paymentOrderId: orderData.orderId,
+                amount: orderData.amount
+              });
 
               await widgets.requestPayment({
                 orderId: orderData.orderId,
