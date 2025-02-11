@@ -90,7 +90,7 @@ const CampaignCreate = () => {
             startDate,
             endDate,
             goalQuantity,
-            product: {
+            productRequest: {
                 name: productName,
                 description: productDesc,
                 price: productPrice,
@@ -104,7 +104,7 @@ const CampaignCreate = () => {
 
             alert("캠페인이 성공적으로 등록되었습니다!");
 
-            navigate(`/campaigns/${response.data}`);
+            navigate(`/campaigns/${response.data.campaignId}`);
         } catch (error) {
             console.error("캠페인 생성 실패:", error.response?.data || error.message);
             alert("캠페인 등록에 실패했습니다. 다시 시도해주세요.");
