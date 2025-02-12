@@ -4,34 +4,51 @@ import {useRecoilState} from "recoil";
 import {userState} from "../recoil/atoms.js";
 
 const NavContainer = styled.nav`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: ${(props) => props.theme.color.PRIMARY};
-    padding: 1rem 2rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: ${props => props.theme.color.WHITE};
+  padding: 1rem 2rem;
+  box-shadow: ${props => props.theme.shadow.sm};
+  position: sticky;
+  top: 0;
+  z-index: 1000;
 `;
 
 const Logo = styled.div`
-    font-size: 1.5rem;
-    color: ${(props) => props.theme.color.WHITE};
-    font-weight: bold;
+  font-size: 1.5rem;
+  color: ${props => props.theme.color.PRIMARY.DEFAULT};
+  font-weight: 700;
+  
+  &:hover {
+    color: ${props => props.theme.color.PRIMARY.DARK};
+  }
 `;
 
-const Menu = styled.div` 
-    a, button {
-        margin-left: 1rem;
-        color: ${(props) => props.theme.color.WHITE};
-        font-weight: 500;
-        background: none;
-        border: none;
-        cursor: pointer;
-        &:hover {
-            text-decoration: underline;
-        }
-        &:hover {
-            text-decoration: underline;
-        } 
+const Menu = styled.div`
+  display: flex;
+  gap: 1.5rem;
+  align-items: center;
+  
+  a, button {
+    color: ${props => props.theme.color.GRAY[600]};
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 0.5rem;
+    transition: ${props => props.theme.transition.DEFAULT};
+    
+    &:hover {
+      color: ${props => props.theme.color.PRIMARY.DEFAULT};
+      background-color: ${props => props.theme.color.PRIMARY[50]};
+      text-decoration: none;
     }
+  }
+  
+  button {
+    background: none;
+    border: none;
+    cursor: pointer;
+  }
 `;
 
 const NavBar = () => {

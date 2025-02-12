@@ -8,64 +8,144 @@ import { userState, orderDataState } from "../recoil/atoms.js";
 
 const Container = styled.div`
     max-width: 800px;
-    margin: 2rem auto;
+    margin: 3rem auto;
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    padding: 1.5rem;
+    border-radius: 16px;
+    padding: 2.5rem;
     color: ${(props) => props.theme.color.DEEP_DARKGRAY};
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
 `;
 
 const Title = styled.h1`
-    margin-bottom: 1rem;
-    font-size: 1.5rem;
+    margin-bottom: 2.5rem;
+    font-size: 2rem;
+    font-weight: 700;
     text-align: center;
+    color: ${props => props.theme.color.DARK};
+    position: relative;
+    
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -12px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: ${props => props.theme.color.PRIMARY};
+        border-radius: 2px;
+    }
 `;
 
 const Section = styled.div`
-    margin-bottom: 1.5rem;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    padding: 1rem;
+    margin-bottom: 2rem;
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    
     h2 {
-        font-size: 1.2rem;
-        margin-bottom: 0.5rem;
+        font-size: 1.3rem;
+        font-weight: 600;
+        margin-bottom: 1.2rem;
+        color: ${props => props.theme.color.DARK};
+        display: flex;
+        align-items: center;
+        
+        &::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 20px;
+            background: ${props => props.theme.color.PRIMARY};
+            margin-right: 0.8rem;
+            border-radius: 2px;
+        }
     }
+    
     p {
-        margin-bottom: 0.3rem;
+        margin-bottom: 0.8rem;
+        font-size: 1.1rem;
+        color: ${props => props.theme.color.DEEP_DARKGRAY};
+        display: flex;
+        justify-content: space-between;
+        padding: 0.5rem 0;
+        
+        &:not(:last-child) {
+            border-bottom: 1px solid #eee;
+        }
     }
 `;
 
 const OrderWrapper = styled.div`
-    margin-top: 1rem;
-    padding: 1rem;
-    border: 1px solid #eee;
-    border-radius: 4px;
-    background-color: #fafafa;
+    margin-top: 1.5rem;
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 `;
 
 const OrderLabel = styled.label`
-    display: inline-block;
-    margin-right: 0.5rem;
     font-weight: 600;
+    color: ${props => props.theme.color.DARK};
 `;
 
 const OrderInput = styled.input`
-    width: 60px;
-    padding: 0.25rem;
-    margin-right: 1rem;
+    width: 80px;
+    padding: 0.75rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 8px;
+    font-size: 1rem;
+    text-align: center;
+    transition: all 0.2s ease;
+    
+    &:focus {
+        outline: none;
+        border-color: ${props => props.theme.color.PRIMARY};
+    }
 `;
 
 const OrderButton = styled.button`
-    padding: 0.5rem 1rem;
-    background-color: ${(props) => props.theme.color.PRIMARY};
+    padding: 0.75rem 1.5rem;
+    background-color: ${props => props.theme.color.PRIMARY};
     border: none;
-    border-radius: 4px;
+    border-radius: 8px;
     color: #fff;
+    font-size: 1rem;
+    font-weight: 600;
     cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: auto;
+    
     &:hover {
-    background-color: #001844;
+        background-color: ${props => props.theme.color.DEEP_BLUE};
+        transform: translateY(-2px);
     }
+    
+    &:active {
+        transform: translateY(0);
+    }
+`;
+
+const LoadingSpinner = styled.div`
+    text-align: center;
+    margin-top: 4rem;
+    color: ${props => props.theme.color.PRIMARY};
+    font-size: 1.1rem;
+`;
+
+const ErrorMessage = styled.div`
+    text-align: center;
+    margin-top: 4rem;
+    padding: 2rem;
+    background-color: #FEE2E2;
+    border-radius: 12px;
+    color: #DC2626;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 `;
 
 const CampaignDetail = () => {
@@ -138,11 +218,11 @@ const CampaignDetail = () => {
     };
 
     if (loading) {
-        return <div style={{ textAlign: "center", marginTop: "2rem" }}>로딩중...</div>;
+        return <LoadingSpinner>캠페인 정보를 불러오는 중입니다...</LoadingSpinner>;
     }
 
     if (error) {
-        return <div style={{ textAlign: "center", marginTop: "2rem", color: "red" }}>{error}</div>;
+        return <ErrorMessage>{error}</ErrorMessage>;
     }
 
     return (
