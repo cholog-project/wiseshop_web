@@ -8,101 +8,106 @@ const PageContainer = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 2rem;
+    padding: 4rem 2rem;
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
 `;
 
 const FormContainer = styled.div`
     width: 100%;
-    max-width: 450px;
-    padding: 2.5rem;
-    background-color: ${props => props.theme.color.WHITE};
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    max-width: 520px;
+    padding: 3rem 4rem;
+    background-color: #ffffff;
+    border-radius: 16px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
 `;
 
 const FormTitle = styled.h1`
     text-align: center;
-    margin-bottom: 2.5rem;
-    font-size: 2rem;
+    margin-bottom: 3rem;
+    font-size: 2.2rem;
     font-weight: 700;
-    color: ${props => props.theme.color.DARK};
+    color: #1a1a1a;
     
     span {
         display: block;
-        font-size: 1rem;
-        color: ${props => props.theme.color.DARKGRAY};
-        margin-top: 0.5rem;
+        font-size: 1.1rem;
+        color: #555555;
+        margin-top: 0.75rem;
         font-weight: 400;
     }
 `;
 
 const FormGroup = styled.div`
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
     
     label {
         display: block;
-        margin-bottom: 0.75rem;
-        font-weight: 500;
-        color: ${props => props.theme.color.DEEP_DARKGRAY};
-        font-size: 0.95rem;
+        margin-bottom: 0.8rem;
+        font-weight: 600;
+        color: #333333;
+        font-size: 1rem;
     }
 `;
 
 const Input = styled.input`
     width: 100%;
-    padding: 0.875rem 1rem;
-    font-size: 1rem;
-    border: 2px solid ${props => props.theme.color.WHITE};
-    border-radius: 12px;
-    background-color: #f8f9fa;
+    padding: 1rem 1.2rem;
+    font-size: 1.05rem;
+    border: 2px solid #e2e8f0;
+    border-radius: 10px;
+    background-color: #ffffff;
     transition: all 0.2s ease;
+    color: #333333;
     
     &:focus {
         outline: none;
-        border-color: ${props => props.theme.color.PRIMARY};
-        background-color: ${props => props.theme.color.WHITE};
+        border-color: #002366;
+        box-shadow: 0 0 0 3px rgba(0, 35, 102, 0.1);
     }
     
     &::placeholder {
-        color: #adb5bd;
+        color: #a0aec0;
     }
 `;
 
 const SubmitButton = styled.button`
     width: 100%;
-    padding: 1rem;
-    margin-top: 1rem;
-    background-color: ${props => props.theme.color.PRIMARY};
-    color: ${props => props.theme.color.WHITE};
+    padding: 1.2rem;
+    margin-top: 2rem;
+    background-color: #002366;
+    color: #ffffff;
     border: none;
-    border-radius: 12px;
+    border-radius: 10px;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.2s ease;
     
     &:hover {
-        background-color: ${props => props.theme.color.DEEP_BLUE};
+        background-color: #001844;
         transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 35, 102, 0.2);
     }
     
     &:active {
         transform: translateY(0);
+        box-shadow: none;
     }
 `;
 
 const AdditionalLinks = styled.div`
-    margin-top: 1.5rem;
+    margin-top: 2rem;
     text-align: center;
-    font-size: 0.95rem;
-    color: ${props => props.theme.color.DARKGRAY};
+    font-size: 1rem;
+    color: #555555;
+    padding-top: 2rem;
+    border-top: 1px solid #e2e8f0;
     
     a {
-        color: ${props => props.theme.color.PRIMARY};
+        color: #002366;
         text-decoration: none;
         margin-left: 0.5rem;
-        font-weight: 500;
+        font-weight: 600;
         
         &:hover {
             text-decoration: underline;
@@ -112,27 +117,46 @@ const AdditionalLinks = styled.div`
 
 const ErrorMessage = styled.div`
     color: #e53e3e;
-    font-size: 0.875rem;
+    font-size: 0.9rem;
     margin-top: 0.5rem;
-    padding-left: 0.5rem;
+    padding: 0.75rem 1rem;
+    background-color: #FEE2E2;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    
+    &::before {
+        content: "!";
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        background-color: #e53e3e;
+        color: white;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 20px;
+        margin-right: 8px;
+        font-weight: bold;
+    }
 `;
 
 const PasswordRequirements = styled.ul`
     list-style: none;
-    padding: 0;
+    padding: 0.75rem 0;
     margin: 0.5rem 0;
-    font-size: 0.85rem;
-    color: ${props => props.theme.color.DARKGRAY};
+    font-size: 0.9rem;
+    color: #555555;
     
     li {
-        margin-bottom: 0.25rem;
+        margin-bottom: 0.4rem;
         display: flex;
         align-items: center;
         gap: 0.5rem;
         
         &::before {
-            content: "•";
-            color: ${props => props.theme.color.PRIMARY};
+            content: "✓";
+            color: #002366;
+            font-weight: bold;
         }
     }
 `;

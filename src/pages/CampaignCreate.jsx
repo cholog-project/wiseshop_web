@@ -7,8 +7,8 @@ const Container = styled.div`
     max-width: 800px;
     margin: 3rem auto;
     padding: 2.5rem;
-    background-color: ${props => props.theme.color.WHITE};
-    box-shadow: ${props => props.theme.shadow.DEFAULT};
+    background-color: #ffffff;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     border-radius: 1rem;
 `;
 
@@ -17,7 +17,7 @@ const Title = styled.h1`
     margin-bottom: 2.5rem;
     font-size: 2rem;
     font-weight: 700;
-    color: ${props => props.theme.color.DARK};
+    color: #1a1a1a;
 `;
 
 const FormSection = styled.div`
@@ -27,9 +27,9 @@ const FormSection = styled.div`
         font-size: 1.25rem;
         font-weight: 600;
         margin-bottom: 1.5rem;
-        color: ${props => props.theme.color.DARK};
+        color: #1a1a1a;
         padding-bottom: 0.5rem;
-        border-bottom: 2px solid ${props => props.theme.color.PRIMARY[50]};
+        border-bottom: 2px solid rgba(0, 35, 102, 0.1);
     }
 `;
 
@@ -50,53 +50,84 @@ const FormGroup = styled.div`
         display: block;
         margin-bottom: 0.5rem;
         font-weight: 500;
-        color: ${props => props.theme.color.GRAY[700]};
+        color: #4a5568;
+        font-size: 0.95rem;
     }
     
     input, textarea {
         width: 100%;
         padding: 0.75rem;
         font-size: 1rem;
-        border: 1px solid ${props => props.theme.color.GRAY[300]};
+        border: 1px solid #e2e8f0;
         border-radius: 0.5rem;
-        transition: ${props => props.theme.transition.DEFAULT};
+        transition: all 0.2s ease;
+        color: #1a1a1a;
+        background-color: #ffffff;
         
         &:focus {
             outline: none;
-            border-color: ${props => props.theme.color.PRIMARY.DEFAULT};
-            box-shadow: 0 0 0 3px ${props => props.theme.color.PRIMARY[50]};
+            border-color: #002366;
+            box-shadow: 0 0 0 3px rgba(0, 35, 102, 0.1);
         }
         
         &::placeholder {
-            color: ${props => props.theme.color.GRAY[400]};
+            color: #a0aec0;
         }
     }
 
     textarea {
         min-height: 120px;
         resize: vertical;
+        line-height: 1.5;
+    }
+`;
+
+const InputWrapper = styled.div`
+    position: relative;
+    
+    input[type="datetime-local"] {
+        color: #1a1a1a;
+        
+        &::-webkit-calendar-picker-indicator {
+            cursor: pointer;
+            opacity: 0.6;
+            
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+    
+    input[type="number"] {
+        &::-webkit-inner-spin-button,
+        &::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
     }
 `;
 
 const SubmitButton = styled.button`
     width: 100%;
     padding: 1rem;
-    background-color: ${props => props.theme.color.PRIMARY.DEFAULT};
-    color: ${props => props.theme.color.WHITE};
+    background-color: #002366;
+    color: #ffffff;
     border: none;
     border-radius: 0.5rem;
     font-size: 1.1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: ${props => props.theme.transition.DEFAULT};
+    transition: all 0.2s ease;
     
     &:hover {
-        background-color: ${props => props.theme.color.PRIMARY.DARK};
+        background-color: #001844;
         transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(0, 35, 102, 0.2);
     }
     
     &:active {
         transform: translateY(0);
+        box-shadow: none;
     }
 `;
 
@@ -105,6 +136,15 @@ const ErrorMessage = styled.span`
     color: #EF4444;
     font-size: 0.875rem;
     margin-top: 0.5rem;
+    padding: 0.5rem;
+    background-color: #FEF2F2;
+    border-radius: 0.375rem;
+    border: 1px solid #FCA5A5;
+`;
+
+const RequiredMark = styled.span`
+    color: #EF4444;
+    margin-left: 4px;
 `;
 
 const CampaignCreate = () => {
@@ -126,7 +166,6 @@ const CampaignCreate = () => {
             ...prev,
             [name]: value
         }));
-        // 에러 메시지 초기화
         if (errors[name]) {
             setErrors(prev => ({
                 ...prev,
@@ -192,37 +231,52 @@ const CampaignCreate = () => {
                     <h2>캠페인 기본 정보</h2>
                     <FormGrid>
                         <FormGroup>
-                            <label>펀딩 시작 일시</label>
-                            <input
-                                type="datetime-local"
-                                name="startDate"
-                                value={formData.startDate}
-                                onChange={handleChange}
-                                required
-                            />
+                            <label>
+                                펀딩 시작 일시
+                                <RequiredMark>*</RequiredMark>
+                            </label>
+                            <InputWrapper>
+                                <input
+                                    type="datetime-local"
+                                    name="startDate"
+                                    value={formData.startDate}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </InputWrapper>
                         </FormGroup>
                         <FormGroup>
-                            <label>펀딩 종료 일시</label>
-                            <input
-                                type="datetime-local"
-                                name="endDate"
-                                value={formData.endDate}
-                                onChange={handleChange}
-                                required
-                            />
+                            <label>
+                                펀딩 종료 일시
+                                <RequiredMark>*</RequiredMark>
+                            </label>
+                            <InputWrapper>
+                                <input
+                                    type="datetime-local"
+                                    name="endDate"
+                                    value={formData.endDate}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </InputWrapper>
                             {errors.endDate && <ErrorMessage>{errors.endDate}</ErrorMessage>}
                         </FormGroup>
                     </FormGrid>
                     <FormGroup>
-                        <label>목표 수량</label>
-                        <input
-                            type="number"
-                            name="goalQuantity"
-                            placeholder="달성하고자 하는 목표 수량을 입력해주세요"
-                            value={formData.goalQuantity}
-                            onChange={handleChange}
-                            required
-                        />
+                        <label>
+                            목표 수량
+                            <RequiredMark>*</RequiredMark>
+                        </label>
+                        <InputWrapper>
+                            <input
+                                type="number"
+                                name="goalQuantity"
+                                placeholder="달성하고자 하는 목표 수량을 입력해주세요"
+                                value={formData.goalQuantity}
+                                onChange={handleChange}
+                                required
+                            />
+                        </InputWrapper>
                         {errors.goalQuantity && <ErrorMessage>{errors.goalQuantity}</ErrorMessage>}
                     </FormGroup>
                 </FormSection>
@@ -230,49 +284,69 @@ const CampaignCreate = () => {
                 <FormSection>
                     <h2>상품 정보</h2>
                     <FormGroup>
-                        <label>상품명</label>
-                        <input
-                            type="text"
-                            name="productName"
-                            placeholder="상품의 이름을 입력해주세요"
-                            value={formData.productName}
-                            onChange={handleChange}
-                            required
-                        />
+                        <label>
+                            상품명
+                            <RequiredMark>*</RequiredMark>
+                        </label>
+                        <InputWrapper>
+                            <input
+                                type="text"
+                                name="productName"
+                                placeholder="상품의 이름을 입력해주세요"
+                                value={formData.productName}
+                                onChange={handleChange}
+                                required
+                            />
+                        </InputWrapper>
                     </FormGroup>
                     <FormGroup>
-                        <label>상품 설명</label>
-                        <textarea
-                            name="productDesc"
-                            placeholder="상품에 대한 상세한 설명을 입력해주세요"
-                            value={formData.productDesc}
-                            onChange={handleChange}
-                            required
-                        />
+                        <label>
+                            상품 설명
+                            <RequiredMark>*</RequiredMark>
+                        </label>
+                        <InputWrapper>
+                            <textarea
+                                name="productDesc"
+                                placeholder="상품에 대한 상세한 설명을 입력해주세요"
+                                value={formData.productDesc}
+                                onChange={handleChange}
+                                required
+                            />
+                        </InputWrapper>
                     </FormGroup>
                     <FormGrid>
                         <FormGroup>
-                            <label>상품 가격</label>
-                            <input
-                                type="number"
-                                name="productPrice"
-                                placeholder="상품의 판매 가격을 입력해주세요"
-                                value={formData.productPrice}
-                                onChange={handleChange}
-                                required
-                            />
+                            <label>
+                                상품 가격
+                                <RequiredMark>*</RequiredMark>
+                            </label>
+                            <InputWrapper>
+                                <input
+                                    type="number"
+                                    name="productPrice"
+                                    placeholder="상품의 판매 가격을 입력해주세요"
+                                    value={formData.productPrice}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </InputWrapper>
                             {errors.productPrice && <ErrorMessage>{errors.productPrice}</ErrorMessage>}
                         </FormGroup>
                         <FormGroup>
-                            <label>총 재고 수량</label>
-                            <input
-                                type="number"
-                                name="totalStock"
-                                placeholder="준비된 총 재고 수량을 입력해주세요"
-                                value={formData.totalStock}
-                                onChange={handleChange}
-                                required
-                            />
+                            <label>
+                                총 재고 수량
+                                <RequiredMark>*</RequiredMark>
+                            </label>
+                            <InputWrapper>
+                                <input
+                                    type="number"
+                                    name="totalStock"
+                                    placeholder="준비된 총 재고 수량을 입력해주세요"
+                                    value={formData.totalStock}
+                                    onChange={handleChange}
+                                    required
+                                />
+                            </InputWrapper>
                             {errors.totalStock && <ErrorMessage>{errors.totalStock}</ErrorMessage>}
                         </FormGroup>
                     </FormGrid>

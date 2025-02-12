@@ -1,42 +1,240 @@
+/* 기본 리셋 및 전역 스타일 */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8f9fa;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
 #root {
+  min-height: 100vh;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  padding: 0;
+}
+
+/* 컨테이너 스타일 */
+.container {
+  width: 100%;
   max-width: 1280px;
   margin: 0 auto;
-  padding: 2rem;
+  padding: 0 2rem;
+}
+
+/* 타이포그래피 */
+h1, h2, h3, h4, h5, h6 {
+  margin: 0;
+  line-height: 1.2;
+}
+
+/* 링크 스타일 */
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+/* 버튼 기본 스타일 */
+button {
+  cursor: pointer;
+  border: none;
+  background: none;
+  font: inherit;
+  color: inherit;
+}
+
+/* 유틸리티 클래스 */
+.text-center {
   text-align: center;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.flex {
+  display: flex;
 }
 
-@keyframes logo-spin {
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.grid {
+  display: grid;
+}
+
+/* 간격 유틸리티 */
+.mt-1 { margin-top: 0.25rem; }
+.mt-2 { margin-top: 0.5rem; }
+.mt-3 { margin-top: 1rem; }
+.mt-4 { margin-top: 1.5rem; }
+.mt-5 { margin-top: 2rem; }
+
+.mb-1 { margin-bottom: 0.25rem; }
+.mb-2 { margin-bottom: 0.5rem; }
+.mb-3 { margin-bottom: 1rem; }
+.mb-4 { margin-bottom: 1.5rem; }
+.mb-5 { margin-bottom: 2rem; }
+
+/* 애니메이션 */
+@keyframes fadeIn {
   from {
-    transform: rotate(0deg);
+      opacity: 0;
+      transform: translateY(10px);
   }
   to {
-    transform: rotate(360deg);
+      opacity: 1;
+      transform: translateY(0);
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
+.fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
+
+/* 반응형 미디어 쿼리 */
+@media (max-width: 1440px) {
+  .container {
+      max-width: 1200px;
   }
 }
 
+@media (max-width: 1200px) {
+  .container {
+      max-width: 1024px;
+  }
+}
+
+@media (max-width: 1024px) {
+  .container {
+      max-width: 768px;
+  }
+}
+
+@media (max-width: 768px) {
+  .container {
+      padding: 0 1rem;
+  }
+}
+
+/* 스크롤바 스타일링 */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+/* 선택 스타일 */
+::selection {
+  background-color: rgba(0, 35, 102, 0.1);
+  color: #002366;
+}
+
+/* 포커스 아웃라인 */
+:focus {
+  outline: none;
+}
+
+:focus-visible {
+  outline: 2px solid #002366;
+  outline-offset: 2px;
+}
+
+/* 접근성 유틸리티 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* 로딩 상태 스타일 */
+.loading {
+  opacity: 0.7;
+  pointer-events: none;
+  user-select: none;
+}
+
+/* 카드 스타일 */
 .card {
-  padding: 2em;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  padding: 1.5rem;
+  transition: all 0.2s ease;
 }
 
-.read-the-docs {
-  color: #888;
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* 입력 필드 기본 스타일 */
+input,
+textarea,
+select {
+    color: #333333; /* 텍스트 색상 */
+    background-color: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+    transition: all 0.2s ease;
+    width: 100%;
+}
+
+input:focus,
+textarea:focus,
+select:focus {
+    outline: none;
+    border-color: #002366; /* PRIMARY 색상 */
+    box-shadow: 0 0 0 3px rgba(0, 35, 102, 0.1);
+}
+
+input::placeholder,
+textarea::placeholder {
+    color: #a0aec0;
+}
+
+/* 특정 타입의 input에 대한 스타일 */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="search"],
+input[type="tel"] {
+    color: #333333;
+}
+
+/* disabled 상태의 스타일 */
+input:disabled,
+textarea:disabled,
+select:disabled {
+    background-color: #f7f7f7;
+    cursor: not-allowed;
 }
