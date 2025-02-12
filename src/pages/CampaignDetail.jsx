@@ -298,13 +298,27 @@ const CampaignDetail = () => {
                     <InfoItem>
                         <div className="label">시작일</div>
                         <div className="value">
-                            {new Date(campaign.startDate).toLocaleDateString()}
+                            {new Date(campaign.startDate).toLocaleString('ko-KR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false // 24시간 형식
+                            })}
                         </div>
                     </InfoItem>
                     <InfoItem>
                         <div className="label">종료일</div>
                         <div className="value">
-                            {new Date(campaign.endDate).toLocaleDateString()}
+                            {new Date(campaign.endDate).toLocaleString('ko-KR', {
+                                year: 'numeric',
+                                month: 'long',
+                                day: 'numeric',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                hour12: false // 24시간 형식
+                            })}
                         </div>
                     </InfoItem>
                     <InfoItem>
