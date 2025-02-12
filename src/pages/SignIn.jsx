@@ -151,15 +151,6 @@ const RememberMeSection = styled.div`
     font-size: 0.95rem;
 `;
 
-const ForgotPassword = styled.a`
-    color: #002366;
-    text-decoration: none;
-    font-weight: 500;
-    
-    &:hover {
-        text-decoration: underline;
-    }
-`;
 
 const SignIn = () => {
     const [member, setMember] = useState({ email: "", password: "" });

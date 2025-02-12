@@ -196,11 +196,11 @@ const CampaignCreate = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         if (!validateForm()) {
             return;
         }
-
+    
         const campaignData = {
             startDate: formData.startDate,
             endDate: formData.endDate,
@@ -212,16 +212,22 @@ const CampaignCreate = () => {
                 totalQuantity: parseInt(formData.totalStock),
             },
         };
-
+    
         try {
             const response = await axiosInstance.post("/campaigns", campaignData);
             alert("캠페인이 성공적으로 등록되었습니다!");
             navigate(`/campaigns/${response.data.campaignId}`);
         } catch (error) {
-            alert("캠페인 등록에 실패했습니다. 다시 시도해주세요.");
+            if (error.response) {
+                // 서버에서 응답한 에러 메시지가 있는 경우
+                alert(error.response.data.message || "캠페인 등록에 실패했습니다. 다시 시도해주세요.");
+            } else {
+                alert("캠페인 등록에 실패했습니다. 다시 시도해주세요.");
+            }
             console.error("캠페인 생성 실패:", error);
         }
     };
+    
 
     return (
         <Container>
