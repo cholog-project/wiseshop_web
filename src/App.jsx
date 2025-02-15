@@ -15,6 +15,7 @@ import ProductDetail from './pages/ProductDetail.jsx';
 import AuthWrapper from './components/AuthWrapper.jsx';
 import PrivateRoute from './components/PrivateRoute.jsx';
 import OrderDetail from './pages/OrderDetail.jsx';
+import MyPage from './pages/MyPage.jsx';
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
               <Route path="/address" element={<ShippingAddressList />} />
               <Route path="/address/create" element={<ShippingAddressForm />} />
               <Route path="/orders/:id" element={<OrderDetail />} />
+              <Route path="/mypage" element={<MyPage />} />
             </Route>
           </Routes>
         </BrowserRouter>

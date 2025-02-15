@@ -6,7 +6,9 @@ export const checkLoginStatus = async (setUser) => {
         setUser({
             isLoggedIn: true,
             isLoading: false,
-            user: response.data
+            id: response.data.id,
+            email: response.data.email,
+            name: response.data.name
         });
         return true;
     } catch (error) {
@@ -14,14 +16,18 @@ export const checkLoginStatus = async (setUser) => {
             setUser({
                 isLoggedIn: false,
                 isLoading: false,
-                user: null
+                id: null,
+                email: null,
+                name: null
             });
         } else {
             console.error("로그인 상태 확인 실패:", error);
             setUser({
                 isLoggedIn: false,
                 isLoading: false,
-                user: null
+                id: null,
+                email: null,
+                name: null
             });
         }
         return false;
@@ -34,7 +40,9 @@ export const logout = async (setUser) => {
         setUser({
             isLoggedIn: false,
             isLoading: false,
-            user: null
+            id: null,
+            email: null,
+            name: null
         });
         return true;
     } catch (error) {
@@ -47,6 +55,8 @@ export const initializeAuthState = (setUser) => {
     setUser({
         isLoggedIn: false,
         isLoading: true,
-        user: null
+        id: null,
+        email: null,
+        name: null
     });
 };

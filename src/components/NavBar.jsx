@@ -113,6 +113,12 @@ const NavBar = () => {
             path: "/address",
             icon: "📍",
             requireAuth: true
+        },
+        {
+            label: "내 정보",
+            path: "/mypage",
+            icon: "👤",
+            requireAuth: true
         }
     ];
 
@@ -154,9 +160,9 @@ const NavBar = () => {
                     ))}
                     {user.isLoggedIn ? (
                         <MenuItem>
-                            <AuthButton onClick={handleLogout}>
-                                👋 로그아웃
-                            </AuthButton>
+                        <AuthButton onClick={handleLogout}>
+                            👋 로그아웃
+                        </AuthButton>
                         </MenuItem>
                     ) : (
                         <MenuItem>
