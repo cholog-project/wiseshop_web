@@ -3,6 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import styled from "styled-components";
 import axiosInstance from "../api/axiosInstance";
 import noImage from "../assets/no-image.jpg";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms";
 
 const Container = styled.div`
     max-width: 1200px;
@@ -228,6 +230,7 @@ const ButtonContainer = styled.div`
 `;
 
 const ProductDetail = () => {
+    const user = useRecoilValue(userState);
     const navigate = useNavigate();
     const { id } = useParams();
     const [product, setProduct] = useState(null);
@@ -327,6 +330,11 @@ const ProductDetail = () => {
         return <Container><ErrorText>상품을 찾을 수 없습니다.</ErrorText></Container>;
     }
 
+    // 소유자 확인 함수
+    const isOwner = () => {
+        return user.isLoggedIn && user.id === product.ownerId;
+    };
+    
     return (
         <Container>
             <ProductSection>
@@ -340,21 +348,27 @@ const ProductDetail = () => {
                 <InfoSection>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <ProductTitle>{product.name}</ProductTitle>
-                        <EditButton onClick={handleEditInfoClick}>정보 수정</EditButton>
+                        {isOwner() && (
+                            <EditButton onClick={handleEditInfoClick}>정보 수정</EditButton>
+                        )}
                     </div>
                     <ProductDescription>{product.description}</ProductDescription>
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
                         <ProductPrice>{formatPrice(product.price)}</ProductPrice>
-                        <EditButton onClick={handleEditPriceClick}>가격/수량 수정</EditButton>
+                        {isOwner() && (
+                            <EditButton onClick={handleEditPriceClick}>가격/수량 수정</EditButton>
+                        )}
                     </div>
                     <StockInfo inStock={product.totalQuantity > 0}>
                         재고: {product.totalQuantity}개
                     </StockInfo>
-                    <ButtonContainer>
-                        <DeleteButton onClick={handleDeleteClick}>
-                            상품 삭제
-                        </DeleteButton>
-                    </ButtonContainer>
+                    {isOwner() && (
+                        <ButtonContainer>
+                            <DeleteButton onClick={handleDeleteClick}>
+                                상품 삭제
+                            </DeleteButton>
+                        </ButtonContainer>
+                    )}
                 </InfoSection>
             </ProductSection>
 

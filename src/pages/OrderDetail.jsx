@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axiosInstance from "../api/axiosInstance";
+import { useRecoilValue } from "recoil";
+import { userState } from "../recoil/atoms";
 
 const Container = styled.div`
     max-width: 800px;
@@ -187,6 +189,7 @@ const ModalButtons = styled.div`
 
 const OrderDetail = () => {
     const { id } = useParams();
+    const user = useRecoilValue(userState); // 현재 로그인한 사용자 정보
     const navigate = useNavigate();
     const [order, setOrder] = useState(null);
     const [loading, setLoading] = useState(true);
@@ -199,6 +202,14 @@ const OrderDetail = () => {
             try {
                 const response = await axiosInstance.get(`/orders/${id}`);
                 setOrder(response.data);
+                
+                // 주문 소유자 확인
+                if (response.data.memberId !== user.id) {
+                    setError('접근 권한이 없습니다.');
+                    navigate('/orders');
+                    return;
+                }
+                
                 setError(null);
             } catch (err) {
                 console.error('주문 정보 조회 실패:', err);
@@ -208,8 +219,15 @@ const OrderDetail = () => {
             }
         };
 
+        // 로그인 상태 확인
+        if (!user.isLoggedIn) {
+            setError('로그인이 필요한 서비스입니다.');
+            navigate('/signin');
+            return;
+        }
+
         fetchOrderDetail();
-    }, [id]);
+    }, [id, user, navigate]);
 
     const handleDeleteClick = () => {
         setShowDeleteModal(true);
@@ -239,6 +257,10 @@ const OrderDetail = () => {
 
     if (error) {
         return <ErrorMessage>{error}</ErrorMessage>;
+    }
+
+    if (order && order.ownerId !== user.id) {
+        return <ErrorMessage>접근 권한이 없습니다.</ErrorMessage>;
     }
 
     return (

@@ -25,6 +25,18 @@ const Title = styled.h1`
     }
 `;
 
+const TitleSection = styled.div`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 3rem;
+    position: relative;
+    
+    @media (max-width: 768px) {
+        margin-bottom: 2rem;
+    }
+`;
+
 const CampaignList = styled.div`
     display: grid;
     gap: 2rem;
@@ -293,6 +305,43 @@ const ProgressFill = styled.div`
     transition: width 0.3s ease;
 `;
 
+const CreateCampaignButton = styled.button`
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    padding: 1rem 2rem;
+    background-color: #002366;
+    color: white;
+    border: none;
+    border-radius: 3rem;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0 4px 12px rgba(0, 35, 102, 0.2);
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    z-index: 100;
+    
+    &:hover {
+        background-color: #001844;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 16px rgba(0, 35, 102, 0.3);
+    }
+    
+    &:active {
+        transform: translateY(0);
+    }
+    
+    @media (max-width: 640px) {
+        bottom: 1.5rem;
+        right: 1.5rem;
+        padding: 0.875rem 1.5rem;
+        font-size: 0.9rem;
+    }
+`;
+
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString('ko-KR', {
     year: 'numeric',
@@ -358,7 +407,9 @@ const Home = () => {
 
   return (
       <HomeWrapper>
-          <Title>현재 진행 중인 캠페인</Title>
+          <TitleSection>
+            <Title>현재 진행 중인 캠페인</Title>
+        </TitleSection>
           {campaigns.length > 0 ? (
               <CampaignList>
                   {campaigns.map((campaign) => (
@@ -416,8 +467,14 @@ const Home = () => {
                   </NoCampaignText>
               </NoCampaignWrapper>
           )}
+            {user.isLoggedIn && (
+                <CreateCampaignButton onClick={() => navigate('/campaigns/create')}>
+                    ✨ 새 캠페인 만들기
+                </CreateCampaignButton>
+            )}
 
-          {user.isLoggedIn && (
+            {/* 회원 탈퇴 섹션 */}
+            {user.isLoggedIn && (
                 <DeleteAccountSection>
                     <DeleteAccountButton onClick={() => setShowDeleteModal(true)}>
                         회원 탈퇴

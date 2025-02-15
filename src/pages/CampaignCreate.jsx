@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance.js";
@@ -147,6 +147,76 @@ const RequiredMark = styled.span`
     margin-left: 4px;
 `;
 
+const Tooltip = styled.div`
+    position: absolute;
+    right: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1a1a1a;
+    color: white;
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.2s ease;
+    
+    &::before {
+        content: '';
+        position: absolute;
+        left: -4px;
+        top: 50%;
+        transform: translateY(-50%);
+        border-width: 4px;
+        border-style: solid;
+        border-color: transparent #1a1a1a transparent transparent;
+    }
+`;
+
+const InputLabel = styled.label`
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4a5568;
+    font-size: 0.95rem;
+    
+    .info-icon {
+        margin-left: 0.5rem;
+        color: #666666;
+        cursor: help;
+        position: relative;
+        
+        &:hover ${Tooltip} {
+            opacity: 1;
+            visibility: visible;
+        }
+    }
+`;
+
+const Input = styled.input`
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1rem;
+    border: 2px solid ${props => props.error ? '#ef4444' : '#e2e8f0'};
+    border-radius: 0.5rem;
+    transition: all 0.2s ease;
+    color: #1a1a1a;
+    background-color: #ffffff;
+    
+    &:focus {
+        outline: none;
+        border-color: #002366;
+        box-shadow: 0 0 0 3px rgba(0, 35, 102, 0.1);
+    }
+    
+    &:disabled {
+        background-color: #f3f4f6;
+        cursor: not-allowed;
+    }
+`;
+
 const CampaignCreate = () => {
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
@@ -159,7 +229,6 @@ const CampaignCreate = () => {
         totalStock: ""
     });
     const [errors, setErrors] = useState({});
-
     const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData(prev => ({
@@ -227,7 +296,6 @@ const CampaignCreate = () => {
             console.error("캠페인 생성 실패:", error);
         }
     };
-    
 
     return (
         <Container>
@@ -237,12 +305,17 @@ const CampaignCreate = () => {
                     <h2>캠페인 기본 정보</h2>
                     <FormGrid>
                         <FormGroup>
-                            <label>
+                            <InputLabel>
                                 펀딩 시작 일시
                                 <RequiredMark>*</RequiredMark>
-                            </label>
+                                <span className="info-icon">ⓘ
+                                    <Tooltip>
+                                        캠페인이 시작될 날짜와 시간을 선택해주세요
+                                    </Tooltip>
+                                </span>
+                            </InputLabel>
                             <InputWrapper>
-                                <input
+                                <Input
                                     type="datetime-local"
                                     name="startDate"
                                     value={formData.startDate}
@@ -252,16 +325,22 @@ const CampaignCreate = () => {
                             </InputWrapper>
                         </FormGroup>
                         <FormGroup>
-                            <label>
+                            <InputLabel>
                                 펀딩 종료 일시
                                 <RequiredMark>*</RequiredMark>
-                            </label>
+                                <span className="info-icon">ⓘ
+                                    <Tooltip>
+                                        캠페인이 종료될 날짜와 시간을 선택해주세요
+                                    </Tooltip>
+                                </span>
+                            </InputLabel>
                             <InputWrapper>
-                                <input
+                                <Input
                                     type="datetime-local"
                                     name="endDate"
                                     value={formData.endDate}
                                     onChange={handleChange}
+                                    error={errors.endDate}
                                     required
                                 />
                             </InputWrapper>
@@ -269,33 +348,44 @@ const CampaignCreate = () => {
                         </FormGroup>
                     </FormGrid>
                     <FormGroup>
-                        <label>
+                        <InputLabel>
                             목표 수량
                             <RequiredMark>*</RequiredMark>
-                        </label>
+                            <span className="info-icon">ⓘ
+                                <Tooltip>
+                                    달성하고자 하는 총 판매 목표 수량을 입력해주세요
+                                </Tooltip>
+                            </span>
+                        </InputLabel>
                         <InputWrapper>
-                            <input
+                            <Input
                                 type="number"
                                 name="goalQuantity"
                                 placeholder="달성하고자 하는 목표 수량을 입력해주세요"
                                 value={formData.goalQuantity}
                                 onChange={handleChange}
+                                error={errors.goalQuantity}
                                 required
                             />
                         </InputWrapper>
                         {errors.goalQuantity && <ErrorMessage>{errors.goalQuantity}</ErrorMessage>}
                     </FormGroup>
                 </FormSection>
-
+    
                 <FormSection>
                     <h2>상품 정보</h2>
                     <FormGroup>
-                        <label>
+                        <InputLabel>
                             상품명
                             <RequiredMark>*</RequiredMark>
-                        </label>
+                            <span className="info-icon">ⓘ
+                                <Tooltip>
+                                    판매할 상품의 이름을 입력해주세요
+                                </Tooltip>
+                            </span>
+                        </InputLabel>
                         <InputWrapper>
-                            <input
+                            <Input
                                 type="text"
                                 name="productName"
                                 placeholder="상품의 이름을 입력해주세요"
@@ -306,10 +396,15 @@ const CampaignCreate = () => {
                         </InputWrapper>
                     </FormGroup>
                     <FormGroup>
-                        <label>
+                        <InputLabel>
                             상품 설명
                             <RequiredMark>*</RequiredMark>
-                        </label>
+                            <span className="info-icon">ⓘ
+                                <Tooltip>
+                                    상품에 대한 자세한 설명을 입력해주세요
+                                </Tooltip>
+                            </span>
+                        </InputLabel>
                         <InputWrapper>
                             <textarea
                                 name="productDesc"
@@ -322,34 +417,46 @@ const CampaignCreate = () => {
                     </FormGroup>
                     <FormGrid>
                         <FormGroup>
-                            <label>
+                            <InputLabel>
                                 상품 가격
                                 <RequiredMark>*</RequiredMark>
-                            </label>
+                                <span className="info-icon">ⓘ
+                                    <Tooltip>
+                                        상품의 판매 가격을 입력해주세요
+                                    </Tooltip>
+                                </span>
+                            </InputLabel>
                             <InputWrapper>
-                                <input
+                                <Input
                                     type="number"
                                     name="productPrice"
                                     placeholder="상품의 판매 가격을 입력해주세요"
                                     value={formData.productPrice}
                                     onChange={handleChange}
+                                    error={errors.productPrice}
                                     required
                                 />
                             </InputWrapper>
                             {errors.productPrice && <ErrorMessage>{errors.productPrice}</ErrorMessage>}
                         </FormGroup>
                         <FormGroup>
-                            <label>
+                            <InputLabel>
                                 총 재고 수량
                                 <RequiredMark>*</RequiredMark>
-                            </label>
+                                <span className="info-icon">ⓘ
+                                    <Tooltip>
+                                        준비된 총 재고 수량을 입력해주세요
+                                    </Tooltip>
+                                </span>
+                            </InputLabel>
                             <InputWrapper>
-                                <input
+                                <Input
                                     type="number"
                                     name="totalStock"
                                     placeholder="준비된 총 재고 수량을 입력해주세요"
                                     value={formData.totalStock}
                                     onChange={handleChange}
+                                    error={errors.totalStock}
                                     required
                                 />
                             </InputWrapper>
@@ -357,11 +464,11 @@ const CampaignCreate = () => {
                         </FormGroup>
                     </FormGrid>
                 </FormSection>
-
+    
                 <SubmitButton type="submit">캠페인 등록하기</SubmitButton>
             </form>
         </Container>
-    );
+    );    
 }
 
 export default CampaignCreate;
