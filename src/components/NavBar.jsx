@@ -1,160 +1,171 @@
-import { Link } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
-import { userState } from "../recoil/atoms.js";
+import { userState } from "../recoil/atoms";
 
 const NavContainer = styled.nav`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
     background-color: #ffffff;
-    padding: 1.2rem 4rem;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+    padding: 1rem 2rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
 `;
 
-const Logo = styled.div`
-    font-size: 1.8rem;
+const NavContent = styled.div`
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+`;
+
+const Logo = styled(Link)`
+    font-size: 1.5rem;
+    font-weight: 700;
     color: #002366;
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    transition: all 0.2s ease;
+    text-decoration: none;
     
     &:hover {
-        transform: translateY(-1px);
         color: #001844;
     }
 `;
 
-const Menu = styled.div`
+const MenuList = styled.ul`
     display: flex;
     gap: 2rem;
-    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 `;
 
-const NavLink = styled(Link)`
+const MenuItem = styled.li`
     position: relative;
+`;
+
+const MenuLink = styled(Link)`
+    text-decoration: none;
     color: #333333;
-    font-weight: 600;
-    font-size: 1.05rem;
-    padding: 0.6rem 1.2rem;
-    border-radius: 8px;
-    transition: all 0.2s ease;
+    font-weight: 500;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
     
     &:hover {
         color: #002366;
-        background-color: rgba(0, 35, 102, 0.05);
     }
     
-    &::after {
-        content: '';
-        position: absolute;
-        bottom: 0;
-        left: 50%;
-        width: 0;
-        height: 2px;
-        background-color: #002366;
-        transition: all 0.2s ease;
-        transform: translateX(-50%);
-    }
-    
-    &:hover::after {
-        width: 80%;
-    }
-`;
-
-const LogoutButton = styled.button`
-    color: #333333;
-    font-weight: 600;
-    font-size: 1.05rem;
-    padding: 0.6rem 1.2rem;
-    border: 2px solid transparent;
-    border-radius: 8px;
-    background: none;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    
-    &:hover {
-        color: #e53e3e;
-        background-color: #FEE2E2;
-        border-color: #FCA5A5;
-    }
-`;
-
-const CreateCampaignButton = styled(NavLink)`
-    background-color: #002366;
-    color: #ffffff !important;
-    padding: 0.6rem 1.4rem;
-    border-radius: 8px;
-    
-    &:hover {
-        background-color: #001844;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(0, 35, 102, 0.2);
-    }
-    
-    &:active {
-        transform: translateY(0);
-    }
-    
-    &::after {
-        display: none;
-    }
-`;
-
-const AuthButtons = styled.div`
-    display: flex;
-    gap: 1rem;
-    
-    ${NavLink}:last-child {
-        background-color: #002366;
-        color: #ffffff;
-        
-        &:hover {
-            background-color: #001844;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 35, 102, 0.2);
-        }
+    &.active {
+        color: #002366;
+        font-weight: 600;
         
         &::after {
-            display: none;
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background-color: #002366;
+            border-radius: 1px;
         }
+    }
+`;
+
+const AuthButton = styled.button`
+    background: none;
+    border: none;
+    color: #333333;
+    font-weight: 500;
+    padding: 0.5rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    
+    &:hover {
+        color: #002366;
     }
 `;
 
 const NavBar = () => {
+    const location = useLocation();
+    const navigate = useNavigate();
     const [user, setUser] = useRecoilState(userState);
 
+    const menuItems = [
+        {
+            label: "홈",
+            path: "/",
+            icon: "🏠"
+        },
+        {
+            label: "상품목록",
+            path: "/products",
+            icon: "📦"
+        },
+        {
+            label: "주문내역",
+            path: "/orders",
+            icon: "📋",
+            requireAuth: true
+        },
+        {
+            label: "배송지 관리",
+            path: "/address",
+            icon: "📍",
+            requireAuth: true
+        }
+    ];
+
     const handleLogout = () => {
-        setUser({isLoggedIn: false});
-        localStorage.removeItem("userState");
+        setUser({
+            isLoggedIn: false,
+            uuid: null,
+            email: null,
+            nickname: null,
+            role: null
+        });
+        localStorage.removeItem("token");
+        navigate("/");
     };
 
     return (
         <NavContainer>
-            <Link to="/">
-                <Logo>WiseShop</Logo>
-            </Link>
-            <Menu>
-                {!user.isLoggedIn ? (
-                    <AuthButtons>
-                        <NavLink to="/signin">로그인</NavLink>
-                        <NavLink to="/signup">회원가입</NavLink>
-                    </AuthButtons>
-                ) : (
-                    <>
-                        <CreateCampaignButton to="/campaigns/create">
-                            캠페인 생성하기
-                        </CreateCampaignButton>
-                        <NavLink to="/orders">주문 목록</NavLink>
-                        <LogoutButton onClick={handleLogout}>
-                            로그아웃
-                        </LogoutButton>
-                    </>
-                )}
-            </Menu>
+            <NavContent>
+                <Logo to="/">WISESHOP</Logo>
+                <MenuList>
+                    {menuItems.map((item) => (
+                        (!item.requireAuth || (item.requireAuth && user.isLoggedIn)) && (
+                            <MenuItem key={item.path}>
+                                <MenuLink 
+                                    to={item.path}
+                                    className={location.pathname === item.path ? "active" : ""}
+                                >
+                                    {item.icon} {item.label}
+                                </MenuLink>
+                            </MenuItem>
+                        )
+                    ))}
+                    {user.isLoggedIn ? (
+                        <MenuItem>
+                            <AuthButton onClick={handleLogout}>
+                                👋 로그아웃
+                            </AuthButton>
+                        </MenuItem>
+                    ) : (
+                        <MenuItem>
+                            <MenuLink 
+                                to="/signin"
+                                className={location.pathname === "/signin" ? "active" : ""}
+                            >
+                                🔑 로그인
+                            </MenuLink>
+                        </MenuItem>
+                    )}
+                </MenuList>
+            </NavContent>
         </NavContainer>
     );
 };

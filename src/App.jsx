@@ -9,6 +9,8 @@ import CampaignCreate from "./pages/CampaignCreate.jsx";
 import CampaignDetail from "./pages/CampaignDetail.jsx";
 import Orders from "./pages/Orders.jsx";
 import PaymentSuccess from "./pages/PaymentSuccess.jsx";
+import ShippingAddressForm from './pages/CreateAddress.jsx';
+import ShippingAddressList from './pages/AdressList.jsx';
 
 function App() {
   return (
@@ -24,6 +26,9 @@ function App() {
             <Route path="/campaigns/:id" element={<CampaignDetail />} />
             <Route path="/orders" element={<Orders />} />
             <Route path="/success" element={<PaymentSuccess />} />
+            <Route path="/address" element={<ShippingAddressForm />} />
+            <Route path="/address" element={<ShippingAddressList />} />
+            <Route path="/address/create" element={<ShippingAddressForm />} />
           </Routes>
         </BrowserRouter>
       </RecoilRoot>
