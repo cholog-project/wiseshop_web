@@ -142,16 +142,6 @@ const ErrorMessage = styled.div`
     }
 `;
 
-const RememberMeSection = styled.div`
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-top: -1rem;
-    margin-bottom: 1.5rem;
-    font-size: 0.95rem;
-`;
-
-
 const SignIn = () => {
     const [member, setMember] = useState({ email: "", password: "" });
     const [error, setError] = useState("");

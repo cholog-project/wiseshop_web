@@ -2,6 +2,8 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import { useRecoilState } from "recoil";
 import { userState } from "../recoil/atoms";
+import axiosInstance from "../api/axiosInstance";
+import { useEffect } from "react";
 
 const NavContainer = styled.nav`
     background-color: #ffffff;
@@ -101,11 +103,6 @@ const NavBar = () => {
             icon: "🏠"
         },
         {
-            label: "상품목록",
-            path: "/products",
-            icon: "📦"
-        },
-        {
             label: "주문내역",
             path: "/orders",
             icon: "📋",
@@ -119,17 +116,24 @@ const NavBar = () => {
         }
     ];
 
-    const handleLogout = () => {
-        setUser({
-            isLoggedIn: false,
-            uuid: null,
-            email: null,
-            nickname: null,
-            role: null
-        });
-        localStorage.removeItem("token");
-        navigate("/");
+    const handleLogout = async () => {
+        try {
+            await axiosInstance.post("/signout");
+            setUser({
+                isLoggedIn: false,
+                isLoading: false,
+                user: null
+            });
+            navigate("/");
+        } catch (error) {
+            console.error("로그아웃 실패:", error);
+            alert("로그아웃 처리 중 오류가 발생했습니다. 다시 시도해주세요.");
+        }
     };
+
+    useEffect(() => {
+        console.log("Current user state:", user);
+    }, [user]);
 
     return (
         <NavContainer>

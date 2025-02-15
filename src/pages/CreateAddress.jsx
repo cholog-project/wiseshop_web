@@ -2,8 +2,6 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axiosInstance from "../api/axiosInstance";
-import { useRecoilValue } from "recoil";
-import { userState } from "../recoil/atoms";
 
 const Container = styled.div`
     max-width: 800px;
@@ -148,11 +146,8 @@ const CheckboxLabel = styled.label`
     color: #1a1a1a;
     cursor: pointer;
 `;
-
 const ShippingAddressForm = () => {
     const navigate = useNavigate();
-    const user = useRecoilValue(userState);
-    const [existingAddress, setExistingAddress] = useState(null);
     const [formData, setFormData] = useState({
         postalCode: '',
         roadAddress: '',
@@ -160,33 +155,6 @@ const ShippingAddressForm = () => {
         isDefault: false
     });
     const [errors, setErrors] = useState({});
-
-    useEffect(() => {
-        if (!user.isLoggedIn) {
-            alert("로그인이 필요한 서비스입니다.");
-            navigate("/signin");
-            return;
-        }
-        
-        const fetchAddress = async () => {
-            try {
-                const response = await axiosInstance.get(`/members/address`);
-                if (response.data) {
-                    setExistingAddress(response.data);
-                    setFormData({
-                        postalCode: response.data.postalCode || '',
-                        roadAddress: response.data.roadAddress || '',
-                        detailAddress: response.data.detailAddress || '',
-                        isDefault: response.data.isDefault || false
-                    });
-                }
-            } catch (error) {
-                console.error("배송지 정보 조회 실패:", error);
-            }
-        };
-
-        fetchAddress();
-    }, [user, navigate]);
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -219,50 +187,25 @@ const ShippingAddressForm = () => {
         }
 
         try {
-            if (existingAddress) {
-                await axiosInstance.put(`/members/address/${existingAddress.id}`, formData);
-                alert("배송지가 수정되었습니다.");
-            } else {
-                await axiosInstance.post(`/members/address`, formData);
-                alert("배송지가 등록되었습니다.");
-            }
+            await axiosInstance.post(`/address`, formData);
+            alert("배송지가 등록되었습니다.");
             navigate(-1);
         } catch (error) {
-            console.error("배송지 저장 실패:", error);
-            alert("배송지 저장에 실패했습니다. 다시 시도해주세요.");
-        }
-    };
-
-    const handleDelete = async () => {
-        if (!existingAddress) {
-            alert("삭제할 배송지 정보가 없습니다.");
-            return;
-        }
-
-        if (!window.confirm("배송지를 삭제하시겠습니까?")) {
-            return;
-        }
-
-        try {
-            await axiosInstance.delete(`/member/address/${existingAddress.id}`);
-            alert("배송지가 삭제되었습니다.");
-            navigate(-1);
-        } catch (error) {
-            console.error("배송지 삭제 실패:", error);
-            alert("배송지 삭제에 실패했습니다. 다시 시도해주세요.");
+            console.error("배송지 등록 실패:", error);
+            alert("배송지 등록에 실패했습니다. 다시 시도해주세요.");
         }
     };
 
     return (
         <Container>
-            <Title>{existingAddress ? '배송지 수정' : '배송지 등록'}</Title>
+            <Title>배송지 등록</Title>
             
             <form onSubmit={handleSubmit}>
                 <FormSection>
                     <FormGroup>
                         <label>우편번호</label>
                         <Input
-                            type="text"
+                            type="number"
                             name="postalCode"
                             value={formData.postalCode}
                             onChange={handleInputChange}
@@ -310,13 +253,8 @@ const ShippingAddressForm = () => {
 
                 <ButtonGroup>
                     <SubmitButton type="submit">
-                        {existingAddress ? '배송지 수정하기' : '배송지 등록하기'}
+                        배송지 등록하기
                     </SubmitButton>
-                    {existingAddress && (
-                        <DeleteButton type="button" onClick={handleDelete}>
-                            배송지 삭제하기
-                        </DeleteButton>
-                    )}
                 </ButtonGroup>
             </form>
         </Container>

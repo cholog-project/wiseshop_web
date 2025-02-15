@@ -1,12 +1,12 @@
 import { atom } from "recoil";
 
-const persistedUser = JSON.parse(localStorage.getItem("userState")) || {
-    isLoggedIn: false,
-};
-
 export const userState = atom({
-    key: "userState",
-    default: persistedUser
+    key: 'userState',
+    default: {
+        isLoggedIn: false,
+        isLoading: true,
+        user: null
+    }
 });
 
 export const campaignListState = atom({

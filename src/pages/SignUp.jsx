@@ -173,14 +173,31 @@ const SignUp = () => {
     const handleChange = (e) => {
         const { name, value } = e.target;
         setNewMember({ ...newMember, [name]: value });
-        setError(""); // 입력 시 에러 메시지 초기화
+        setError("");
     };
 
     const validateForm = () => {
+        if (!newMember.name.trim()) {
+            setError("이름을 입력해주세요.");
+            return false;
+        }
+
+        if (!newMember.email.trim()) {
+            setError("이메일을 입력해주세요.");
+            return false;
+        }
+
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(newMember.email)) {
+            setError("올바른 이메일 형식이 아닙니다.");
+            return false;
+        }
+
         if (newMember.password.length < 8) {
             setError("비밀번호는 최소 8자 이상이어야 합니다.");
             return false;
         }
+
         return true;
     };
 
@@ -193,11 +210,15 @@ const SignUp = () => {
 
         try {
             await axiosInstance.post("/signup", newMember);
-            alert("회원가입이 완료되었습니다!");
+            alert("회원가입이 완료되었습니다! 로그인 페이지로 이동합니다.");
             navigate("/signin");
         } catch (error) {
-            console.error("회원가입 실패:", error);
-            setError(error.response?.data?.message || "회원가입에 실패했습니다. 다시 시도해주세요.");
+            if (error.response?.status === 409) {
+                setError("이미 가입된 이메일입니다.");
+            } else {
+                console.error("회원가입 실패:", error);
+                setError(error.response?.data?.message || "회원가입에 실패했습니다. 다시 시도해주세요.");
+            }
         }
     };
 
@@ -240,9 +261,11 @@ const SignUp = () => {
                             value={newMember.password}
                             onChange={handleChange}
                             required
+                            minLength="8"
                         />
                         <PasswordRequirements>
                             <li>최소 8자 이상</li>
+                            <li>영문, 숫자, 특수문자 조합 권장</li>
                         </PasswordRequirements>
                     </FormGroup>
                     {error && <ErrorMessage>{error}</ErrorMessage>}
@@ -250,7 +273,9 @@ const SignUp = () => {
                 </form>
                 <AdditionalLinks>
                     이미 계정이 있으신가요?
-                    <a href="/signin">로그인</a>
+                    <a onClick={() => navigate("/signin")} style={{ cursor: 'pointer' }}>
+                        로그인
+                    </a>
                 </AdditionalLinks>
             </FormContainer>
         </PageContainer>

@@ -2,8 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import axiosInstance from "../api/axiosInstance";
-import { useRecoilValue } from "recoil";
-import { userState } from "../recoil/atoms";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const Container = styled.div`
     max-width: 800px;
@@ -147,26 +146,23 @@ const DeleteButton = styled(CardButton)`
 
 const ShippingAddressList = () => {
     const navigate = useNavigate();
-    const user = useRecoilValue(userState);
     const [addresses, setAddresses] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        if (!user.isLoggedIn) {
-            alert("로그인이 필요한 서비스입니다.");
-            navigate("/signin");
-            return;
-        }
-        
         fetchAddresses();
-    }, [user, navigate]);
+    }, []);
 
     const fetchAddresses = async () => {
         try {
-            const response = await axiosInstance.get('/members/address');
+            setLoading(true);
+            const response = await axiosInstance.get('/address');
             setAddresses(response.data);
         } catch (error) {
             console.error("배송지 목록 조회 실패:", error);
             alert("배송지 목록을 불러오는데 실패했습니다.");
+        } finally {
+            setLoading(false);
         }
     };
 
@@ -181,9 +177,9 @@ const ShippingAddressList = () => {
         }
 
         try {
-            await axiosInstance.delete(`/api/v1/member/address/${addressId}`);
+            await axiosInstance.delete(`/address/${addressId}`);
             alert("배송지가 삭제되었습니다.");
-            fetchAddresses(); // 목록 새로고침
+            fetchAddresses();
         } catch (error) {
             console.error("배송지 삭제 실패:", error);
             alert("배송지 삭제에 실패했습니다. 다시 시도해주세요.");
@@ -193,6 +189,10 @@ const ShippingAddressList = () => {
     const handleAddNew = () => {
         navigate('/address/create');
     };
+
+    if (loading) {
+        return <LoadingSpinner />;
+    }
 
     return (
         <Container>
