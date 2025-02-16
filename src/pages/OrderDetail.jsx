@@ -259,10 +259,6 @@ const OrderDetail = () => {
         return <ErrorMessage>{error}</ErrorMessage>;
     }
 
-    if (order && order.ownerId !== user.id) {
-        return <ErrorMessage>접근 권한이 없습니다.</ErrorMessage>;
-    }
-
     return (
         <>
             <Container>
