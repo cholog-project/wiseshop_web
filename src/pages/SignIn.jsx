@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axiosInstance from "../api/axiosInstance.js";
 import { useState } from "react";
 import { useSetRecoilState } from "recoil";
@@ -206,7 +206,7 @@ const SignIn = () => {
                 </form>
                 <AdditionalLinks>
                     계정이 없으신가요?
-                    <a href="/signup">회원가입</a>
+                    <Link to={"/signup"}>회원가입</Link>
                 </AdditionalLinks>
             </FormContainer>
         </PageContainer>
