@@ -202,14 +202,6 @@ const OrderDetail = () => {
             try {
                 const response = await axiosInstance.get(`/orders/${id}`);
                 setOrder(response.data);
-                
-                // 주문 소유자 확인
-                if (response.data.memberId !== user.id) {
-                    setError('접근 권한이 없습니다.');
-                    navigate('/orders');
-                    return;
-                }
-                
                 setError(null);
             } catch (err) {
                 console.error('주문 정보 조회 실패:', err);
