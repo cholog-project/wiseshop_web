@@ -32,4 +32,4 @@ export const theme = {
   transition: {
     DEFAULT: 'all 0.2s ease-in-out',
   },
-};
+}

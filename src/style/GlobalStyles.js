@@ -1,4 +1,4 @@
-import { createGlobalStyle } from "styled-components";
+import { createGlobalStyle } from 'styled-components'
 
 const GlobalStyle = createGlobalStyle`
   * {
@@ -9,8 +9,8 @@ const GlobalStyle = createGlobalStyle`
   
   body {
     font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: ${props => props.theme.color.GRAY[100]};
-    color: ${props => props.theme.color.DARK};
+    background-color: ${(props) => props.theme.color.GRAY[100]};
+    color: ${(props) => props.theme.color.DARK};
     line-height: 1.5;
     -webkit-font-smoothing: antialiased;
   }
@@ -23,6 +23,6 @@ const GlobalStyle = createGlobalStyle`
   button {
     font-family: inherit;
   }
-`;
+`
 
-export default GlobalStyle;
+export default GlobalStyle
