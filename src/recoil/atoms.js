@@ -5,7 +5,9 @@ export const userState = atom({
   default: {
     isLoggedIn: false,
     isLoading: true,
-    user: null,
+    id: null,
+    name: '',
+    email: '',
   },
 })
 

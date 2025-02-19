@@ -8,7 +8,7 @@ import SignUp from './pages/SignUp.jsx'
 import CampaignCreate from './pages/CampaignCreate.jsx'
 import CampaignDetail from './pages/CampaignDetail.jsx'
 import Orders from './pages/Orders.jsx'
-import PaymentSuccess from './pages/PaymentSuccess.jsx'
+import PaymentSuccess from './components/PaymentSuccess.jsx'
 import ShippingAddressForm from './pages/CreateAddress.jsx'
 import ShippingAddressList from './pages/ShippingAdressList.jsx'
 import ProductDetail from './pages/ProductDetail.jsx'
@@ -16,6 +16,7 @@ import AuthWrapper from './components/AuthWrapper.jsx'
 import PrivateRoute from './components/PrivateRoute.jsx'
 import OrderDetail from './pages/OrderDetail.jsx'
 import MyPage from './pages/MyPage.jsx'
+import PaymentFail from './components/PaymentFail.jsx'
 
 function App() {
   return (
@@ -30,6 +31,8 @@ function App() {
             <Route path='/signup' element={<SignUp />} />
             <Route path='/campaigns/:id' element={<CampaignDetail />} />
             <Route path='/products/:id' element={<ProductDetail />} />
+            <Route path='/fail' element={<PaymentFail />} />
+            <Route path='/success' element={<PaymentSuccess />} />
 
             {/* Protected Routes */}
             <Route element={<PrivateRoute />}>
