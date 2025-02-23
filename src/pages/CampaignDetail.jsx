@@ -305,8 +305,9 @@ const CampaignDetail = () => {
         </ProductCard>
         <ViewDetailButton onClick={handleProductClick}>상품 상세 보기</ViewDetailButton>
       </Section>
-
-      {user.isLoggedIn && <OrderSection campaign={campaign} />}
+      {Number(campaign.ownerId) !== Number(user.id) && user.isLoggedIn && (
+        <OrderSection campaign={campaign} />
+      )}
     </Container>
   )
 }
